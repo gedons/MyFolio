@@ -4,14 +4,20 @@ const store = createStore({
     state:{
         user:{
             data:{
-
+                name: "Gedoni"
             },
             token: null
         }
     },
     getters:{},
     actions:{},
-    mutations:{},
+    mutations:{
+        logout: (state) => {
+            state.user.token = null;
+            state.user.data = {};
+            // sessionStorage.removeItem("TOKEN");
+          },
+    },
     modules:{}
 });
 

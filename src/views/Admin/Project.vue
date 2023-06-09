@@ -31,9 +31,9 @@
                   </div>
                   <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
                     <MenuItems class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      <MenuItem v-for="item in userNavigation" :key="item.name" v-slot="{ active }">
-                        <router-link :to="item.to" :class="[active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700']">{{ item.name }}</router-link>
-                      </MenuItem>
+                        <MenuItem v-slot="{ active }">
+                          <a @click="logout"  :class="['block px-4 py-2 text-sm text-gray-700 cursor-pointer']">Sign out</a>
+                        </MenuItem>
                     </MenuItems>
                   </transition>
                 </Menu>
@@ -52,7 +52,7 @@
   
         <DisclosurePanel class="md:hidden">
           <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-            <DisclosureButton v-for="item in navigation" :key="item.name" as="a" :to="item.to" :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block rounded-md px-3 py-2 text-base font-medium cursor-pointer']" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</DisclosureButton>
+            <router-link v-for="item in navigation" :key="item.name" :to="item.to" :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block rounded-md px-3 py-2 text-base font-medium cursor-pointer']" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</router-link>
           </div>
           <div class="border-t border-gray-700 pb-3 pt-4">
             <div class="flex items-center px-5">
@@ -69,12 +69,12 @@
               </button>
             </div>
             <div class="mt-3 space-y-1 px-2">
-              <DisclosureButton 
-                v-for="item in userNavigation" 
-                :key="item.name" as="a" :to="item.to" 
-                class="block rounded-md px-3 py-2 text-base 
-                font-medium text-gray-400 hover:bg-gray-700
-                hover:text-white">{{ item.name }}
+                <DisclosureButton 
+                    as="a" 
+                    @click="logout"
+                    class="block rounded-md px-3 py-2 text-base 
+                    font-medium text-gray-400 hover:bg-gray-700
+                  hover:text-white cursor-pointer">Sign out
               </DisclosureButton>
             </div>
           </div>
@@ -110,9 +110,5 @@
     { name: 'Blog',  to: { name: "Ablog" }, current: false },
     { name: 'Messages',  to: { name: "Message" }, current: false },
   ]
-  const userNavigation = [
-    { name: 'Your Profile', href: '#' },
-    { name: 'Settings', href: '#' },
-    { name: 'Sign out', href: '#' },
-  ]
+
   </script>

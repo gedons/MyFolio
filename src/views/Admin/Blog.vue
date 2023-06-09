@@ -24,18 +24,11 @@
                 <!-- Profile dropdown -->
                 <Menu as="div" class="relative ml-3">
                   <div>
-                    <MenuButton class="flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                      <span class="sr-only">Open user menu</span>
-                      <img class="h-8 w-8 rounded-full" :src="user.imageUrl" alt="" />
+                    <MenuButton class="flex max-w-xs items-center rounded-full bg-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                      <a @click="logout"  :class="['block px-4 py-2 text-sm text-gray-300 hover:text-white font-medium cursor-pointer']">End Current Session</a>
                     </MenuButton>
                   </div>
-                  <transition enter-active-class="transition ease-out duration-100" enter-from-class="transform opacity-0 scale-95" enter-to-class="transform opacity-100 scale-100" leave-active-class="transition ease-in duration-75" leave-from-class="transform opacity-100 scale-100" leave-to-class="transform opacity-0 scale-95">
-                    <MenuItems class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <MenuItem v-slot="{ active }">
-                          <a @click="logout"  :class="['block px-4 py-2 text-sm text-gray-700 cursor-pointer']">Sign out</a>
-                        </MenuItem>
-                    </MenuItems>
-                  </transition>
+                 
                 </Menu>
               </div>
             </div>
@@ -52,29 +45,16 @@
   
         <DisclosurePanel class="md:hidden">
           <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
-            <router-link v-for="item in navigation" :key="item.name"  :to="item.to" :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block rounded-md px-3 py-2 text-base font-medium cursor-pointer']" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</router-link>
+            <router-link v-for="item in navigation" :key="item.name" :to="item.to" :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block rounded-md px-3 py-2 text-base font-medium cursor-pointer']" :aria-current="item.current ? 'page' : undefined">{{ item.name }}</router-link>
           </div>
-          <div class="border-t border-gray-700 pb-3 pt-4">
-            <div class="flex items-center px-5">
-              <div class="flex-shrink-0">
-                <img class="h-10 w-10 rounded-full" :src="user.imageUrl" alt="" />
-              </div>
-              <div class="ml-3">
-                <div class="text-base font-medium leading-none text-white">{{ user.name }}</div>
-                <div class="text-sm font-medium leading-none text-gray-400">{{ user.email }}</div>
-              </div>
-              <button type="button" class="ml-auto flex-shrink-0 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                <span class="sr-only">View notifications</span>
-                <BellIcon class="h-6 w-6" aria-hidden="true" />
-              </button>
-            </div>
+          <div class="border-t border-gray-700 pb-3">
             <div class="mt-3 space-y-1 px-2">
                 <DisclosureButton 
                     as="a" 
                     @click="logout"
                     class="block rounded-md px-3 py-2 text-base 
-                    font-medium text-gray-400 hover:bg-gray-700
-                  hover:text-white cursor-pointer">Sign out
+                    font-medium text-gray-200 hover:bg-gray-700
+                  hover:text-white cursor-pointer">End Current Session
               </DisclosureButton>
             </div>
           </div>
@@ -94,21 +74,53 @@
     </div>
   </template>
   
-  <script setup>
+  <script>
   import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue'
   import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline'
-  
-  const user = {
-    name: 'Gedoni Ani',
-    email: 'gedoniani@gmail.com',
-    imageUrl:
-      'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-  }
+  import { useStore } from "vuex";
+  import { computed } from "vue";
+  import { useRouter } from "vue-router";
+
   const navigation = [
     { name: 'Dashboard', to: { name: "Admin" }, current: false },
     { name: 'Projects',  to: { name: "Project" }, current: false },
     { name: 'Blog',  to: { name: "Ablog" }, current: true },
     { name: 'Messages',  to: { name: "Message" }, current: false },
-  ]
+  ];
 
+  export default {
+  components: {
+    Disclosure,
+    DisclosureButton,
+    DisclosurePanel,
+    XMarkIcon,
+    Bars3Icon,
+    Menu,
+    MenuButton,
+    MenuItem,
+    MenuItems,
+    BellIcon,
+    Notification,
+  },
+  setup() {
+    const store = useStore();
+    const router = useRouter();
+
+    function logout() {
+      store.dispatch("logout").then(() => {
+        router.push({
+          name: "Login",
+        });
+      });
+    }
+
+    //store.dispatch("getUser");
+
+    return {
+      user: computed(() => store.state.user.data),
+      navigation,
+      logout,
+    };
+  },
+  };
   </script>

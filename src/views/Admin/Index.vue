@@ -91,7 +91,7 @@
         
             <!-- Action Link -->
             <a href="#" class="block p-3 font-medium text-sm text-center bg-gray-50 hover:bg-gray-100 hover:bg-opacity-75 active:bg-gray-50 text-indigo-600 hover:text-indigo-700 dark:text-white dark:bg-gray-900/50 dark:hover:text-indigo-300 dark:hover:bg-gray-900/75 dark:active:bg-gray-900/50">
-                Create New 
+                View Projects 
             </a>
             <!-- END Action Link -->
             </div>
@@ -118,7 +118,7 @@
         
             <!-- Action Link -->
             <a href="#" class="block p-3 font-medium text-sm text-center bg-gray-50 hover:bg-gray-100 hover:bg-opacity-75 active:bg-gray-50 text-indigo-600 hover:text-indigo-700 dark:text-white dark:bg-gray-900/50 dark:hover:text-indigo-300 dark:hover:bg-gray-900/75 dark:active:bg-gray-900/50">
-                Create New
+                Create New Post
             </a>
             <!-- END Action Link -->
             </div>

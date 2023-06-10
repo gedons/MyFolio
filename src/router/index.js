@@ -3,6 +3,7 @@ import store from "../store";
 import Index from "../views/Index.vue";
 import Admin from "../views/Admin/Index.vue";
 import Project from "../views/Admin/Project.vue";
+import ProjectView from "../views/Admin/ProjectView.vue";
 import Ablog from "../views/Admin/Blog.vue";
 import Message from "../views/Admin/Message.vue";
 import Login from "../views/Login.vue";
@@ -24,6 +25,8 @@ const routes = [
     { path: "/admin/project", name: "Project", component: Project, meta: { requiresAuth: true }, },
     { path: "/admin/blog", name: "Ablog", component: Ablog, meta: { requiresAuth: true }, },
     { path: "/admin/message", name: "Message", component: Message, meta: { requiresAuth: true }, },
+    { path: "/admin/project/create", name: "ProjectCreate", component: ProjectView, meta: { requiresAuth: true }, },
+    { path: "/admin/project/:id", name: "ProjectView", component: ProjectView, meta: { requiresAuth: true }, },
 
     {
       path: "/login",

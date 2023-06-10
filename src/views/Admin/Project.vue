@@ -94,7 +94,7 @@
         <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
             <div v-for="project in projects" :key="project.id" class="flex flex-col py-4 px-6 shadow-md bg-white hover:bg-gray-50 h[470px]">
-              <img :src="project.image" alt="img" class="w-full h-48 object-cover"/>
+              <img :src="project.image_url" alt="img" class="w-full h-48 object-cover"/>
               <h4 class="mt-4 text-lg font-bold">{{project.title}}</h4>
               <div v-html="project.description" class="overflow-hidden flex-1"></div>
 
@@ -174,15 +174,16 @@
     import { computed } from "vue";
 
 
-    const projects = computed(() => store.state.projects);
+    const projects = computed(() => store.state.projects.data);
+
+    store.dispatch("getProjects");
+
      function deleteProject(project) {
-        if (
-          confirm(
-            `Are you sure you want to delete this project? Operation can't be undone!!`
-          )
-        ) {
+        if (confirm(`Are you sure you want to delete this project? Operation can't be undone!!`)
+        ) 
+        {
           store.dispatch("deleteProject", project.id).then(() => {
-           // store.dispatch("getSurveys");
+            store.dispatch("getProjects");
           });
         }
       }

@@ -66,90 +66,110 @@
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Dashboard</h1>
       </div>
     </header>
-    <main>
+    <main class="bg-gray-100">
       <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
           <!-- Statistics: Simple with Action -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
-            <!-- Card -->
-            <div class="flex flex-col rounded-lg shadow-sm bg-white overflow-hidden dark:text-gray-100 dark:bg-gray-800">
-            <!-- Body -->
-            <div class="p-5 grow flex justify-between items-center">
-                <dl class="space-y-1">
-                <dt class="text-2xl font-bold">
-                    14
-                </dt>
-                <dd class="uppercase font-semibold text-sm text-gray-500 tracking-wider dark:text-gray-400">
-                    Projects
-                </dd>
-                </dl>
-                <div class="font-semibold inline-flex px-2 py-1 leading-4 items-center space-x-1 text-sm rounded-full text-indigo-900 bg-indigo-200">
-                <svg class="hi-solid hi-arrow-circle-up inline-block w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"/></svg>
-                <span>7.9%</span>
+          <div v-if="loading" class="flex justify-center">
+            <svg  class="animate-spin text-center  h-8 w-8 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+            <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-gray-900">
+            
+              <!-- project count -->
+              <div class="order-1 lg:order-2 bg-white shadow-md p-3 text-center flex flex-col animate-fade-in-down" style="animation-delay: 0.1s">
+                <h2 class="text-3xl mb-3 text-center font-semibold">Total Projects</h2>
+                <div
+                  class="text-8xl pb-4 font-semibold flex-1 flex items-center justify-center"
+                >
+                  {{ data.totalProjects }}
                 </div>
-            </div>
-            <!-- END Body -->
-        
-            <!-- Action Link -->
-            <a href="#" class="block p-3 font-medium text-sm text-center bg-gray-50 hover:bg-gray-100 hover:bg-opacity-75 active:bg-gray-50 text-indigo-600 hover:text-indigo-700 dark:text-white dark:bg-gray-900/50 dark:hover:text-indigo-300 dark:hover:bg-gray-900/75 dark:active:bg-gray-900/50">
-                View Projects 
-            </a>
-            <!-- END Action Link -->
-            </div>
-            <!-- END Card -->
-        
-            <!-- Card -->
-            <div class="flex flex-col rounded-lg shadow-sm bg-white overflow-hidden dark:text-gray-100 dark:bg-gray-800">
-            <!-- Body -->
-            <div class="p-5 grow flex justify-between items-center">
-                <dl class="space-y-1">
-                <dt class="text-2xl font-bold">
-                    5
-                </dt>
-                <dd class="uppercase font-semibold text-sm text-gray-500 tracking-wider dark:text-gray-400">
-                    Blog Posts
-                </dd>
-                </dl>
-                <div class="font-semibold inline-flex px-2 py-1 leading-4 items-center space-x-1 text-sm rounded-full text-indigo-800 bg-indigo-200">
-                <svg class="hi-solid hi-arrow-circle-down inline-block w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z" clip-rule="evenodd"/></svg>
-                <span>6.9%</span>
+              </div>
+              <!-- /project count -->
+            
+              <!-- blog post -->
+              <div class="order-2 lg:order-2 row-span-2 bg-white shadow-md p-3 text-center flex flex-col animate-fade-in-down" style="animation-delay: 0.2s">
+                <h2 class="text-3xl mb-3 text-center font-semibold">Blog Post</h2>
+                <div v-if="data.latestPosts" class="text-left">
+                  <a
+                  href="#"
+                  
+                  class="block p-2 hover:bg-gray-100/90"
+                >
+                  <div class="font-semibold">{{ data.latestPosts.title }}</div>
+                  <small>
+                    Answer Made at:
+                    <i class="font-semibold">{{ data.latestPosts_created_at }}</i>
+                  </small>
+                </a>
                 </div>
-            </div>
-            <!-- END Body -->
-        
-            <!-- Action Link -->
-            <a href="#" class="block p-3 font-medium text-sm text-center bg-gray-50 hover:bg-gray-100 hover:bg-opacity-75 active:bg-gray-50 text-indigo-600 hover:text-indigo-700 dark:text-white dark:bg-gray-900/50 dark:hover:text-indigo-300 dark:hover:bg-gray-900/75 dark:active:bg-gray-900/50">
-                Create New Post
-            </a>
-            <!-- END Action Link -->
-            </div>
-            <!-- END Card -->
-        
-            <!-- Card -->
-            <div class="flex flex-col rounded-lg shadow-sm bg-white overflow-hidden dark:text-gray-100 dark:bg-gray-800">
-            <!-- Body -->
-            <div class="p-5 grow flex justify-between items-center">
-                <dl class="space-y-1">
-                <dt class="text-2xl font-bold">
-                    5
-                </dt>
-                <dd class="uppercase font-semibold text-sm text-gray-500 tracking-wider dark:text-gray-400">
-                    Messages
-                </dd>
-                </dl>
-                <div class="font-semibold inline-flex px-2 py-1 leading-4 items-center space-x-1 text-sm rounded-full text-indigo-800 bg-indigo-200">
-                <svg class="hi-solid hi-arrow-circle-up inline-block w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd"/></svg>
-                <span>5.6%</span>
+                <div v-else class="text-gray-600 text-center py-16">
+                  You have not made any post yet
                 </div>
-            </div>
-            <!-- END Body -->
-        
-            <!-- Action Link -->
-            <a href="#" class="block p-3 font-medium text-sm text-center bg-gray-50 hover:bg-gray-100 hover:bg-opacity-75 active:bg-gray-50 text-indigo-600 hover:text-indigo-700 dark:text-white dark:bg-gray-900/50 dark:hover:text-indigo-300 dark:hover:bg-gray-900/75 dark:active:bg-gray-900/50">
-                View Messages
-            </a>
-            <!-- END Action Link -->
-            </div>
-            <!-- END Card -->
+              </div>
+              <!-- /blog post -->
+
+              <!-- latest project -->
+              <div class="order-3 lg:order-1 row-span-2 bg-white shadow-md p-3 text-center flex flex-col animate-fade-in-down" style="animation-delay: 0.2s">
+              <h2 class="text-3xl mb-3 text-center font-semibold">Latest Project</h2>
+              <div v-if="data.latestProject">
+                <img
+                  :src="data.latestProject.image_url"
+                  class="w-[240px] h-30 mx-auto"
+                  alt=""
+                />
+                <h3 class="font-bold text-xl mb-3">{{ data.latestProject.title }}</h3>
+                <div class="flex justify-between text-sm mb-1">
+                  <div class="font-semibold">Created Date:</div>
+                  <div>{{ formatDate(data.latestProject.created_at) }}</div>
+                </div>
+
+                <div class="flex justify-between text-sm mb-1">
+                  <div class="font-semibold">Status:</div>
+                  <div>{{ data.latestProject.status ? "Active" : "Draft" }}</div>
+                </div>
+                
+                <div class="flex justify-between">
+                  <router-link class="
+                  py-2
+                  px-3
+                  font-semibold
+                  focus:outline-none
+                  leading-6 
+                  rounded
+                  border
+                 "
+                    :to="{ name: 'ProjectView', params: { id: data.latestProject.id } }"
+                    link
+                  >
+                    <PencilIcon class="w-4 h-4 mr-2 inline-block" />
+                    Edit Project
+                </router-link>
+
+                <router-link class="
+                py-2
+                px-3
+                font-semibold
+                focus:outline-none
+                leading-6 
+                rounded
+                border
+               "
+                  :to="{ name: 'ProjectCreate' }"
+                  link
+                >
+                  <PlusIcon class="w-4 h-4 mr-2 inline-block" />
+                  New Project
+              </router-link>
+                    
+                </div>
+              </div>
+              <div v-else class="text-gray-600 text-center py-16">
+                Your don't have any project yet
+              </div>
+              </div>
+              <!-- /latest project -->
             </div>
           <!-- END Statistics: Simple with Action -->
       </div>
@@ -157,13 +177,30 @@
   </div>
 </template>
 
+<script setup>
+import { computed } from "vue";
+import { useStore } from "vuex";
+import { PencilIcon, PlusIcon } from '@heroicons/vue/24/outline';
+
+
+
+
+const store = useStore();
+
+const loading = computed(() => store.state.dashboard.loading);
+const data = computed(() => store.state.dashboard.data);
+
+store.dispatch("getDashboardData");
+
+</script>
+
 <script>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import { useStore } from "vuex";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
-
+import moment from 'moment';
 
 const navigation = [
   { name: 'Dashboard', to: { name: "Admin" }, current: true },
@@ -191,6 +228,7 @@ export default {
     const store = useStore();
     const router = useRouter();
 
+   
     function logout() {
       store.dispatch("logout").then(() => {
         router.push({
@@ -207,5 +245,12 @@ export default {
       logout,
     };
   },
+
+  methods: {
+  formatDate(date) {
+    return moment(date).fromNow();
+  },
+},
 };
 </script>
+

@@ -91,16 +91,23 @@
               <!-- blog post -->
               <div class="order-2 lg:order-2 row-span-2 bg-white shadow-md p-3 text-center flex flex-col animate-fade-in-down" style="animation-delay: 0.2s">
                 <h2 class="text-3xl mb-3 text-center font-semibold">Blog Post</h2>
-                <div v-if="data.latestPosts" class="text-left">
+                <div
+                class="text-8xl pb-4  font-semibold flex-1 flex items-center justify-center"
+              >
+                {{ data.totalPosts }}
+              </div>
+                <div v-if="data.latestPosts && data.latestPosts.length > 0" class="text-left">
                   <a
-                  href="#"
-                  
+                  v-for="post in data.latestPosts"
+                  :key="post.id"
+                  :href="post.url"
                   class="block p-2 hover:bg-gray-100/90"
-                >
-                  <div class="font-semibold">{{ data.latestPosts.title }}</div>
+                  target="_blank"
+                  >
+                  <div class="font-semibold">{{ post.title }}</div>
                   <small>
                     Answer Made at:
-                    <i class="font-semibold">{{ data.latestPosts_created_at }}</i>
+                    <i class="font-semibold">{{ formatDate(post.created_at) }}</i>
                   </small>
                 </a>
                 </div>

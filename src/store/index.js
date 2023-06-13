@@ -255,6 +255,10 @@ const store = createStore({
           },
 
           //front
+
+          setFrontProjects: (state, projects) => {           
+            state.projects.data = projects.data;
+          },
           // setFrontBlogs: (state, blogs) => {
           //   state.blogs.data = blogs.data;
           // },

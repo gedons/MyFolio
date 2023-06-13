@@ -116,28 +116,10 @@
     <main class="bg-gray-100">
       <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
       
-        <div v-if="projectLoading" class="con">
-          <svg width="100" height="100" style="transform: rotate(45deg);" viewBox="0 0 300 300">
-            <defs>
-              <linearGradient id="gradient-fill" gradientUnits="userSpaceOnUse" x1="0" y1="300" x2="300" y2="0">
-                <stop offset="0%">
-                  <animate attributeName="stop-color" values="#00E06B;#CB0255;#00E06B" dur="5s" repeatCount="indefinite" />
-                </stop>
-                <stop offset="100%">
-                  <animate attributeName="stop-color" values="#04AFC8;#8904C5;#04AFC8" dur="8s" repeatCount="indefinite" />
-                </stop>
-              </linearGradient>
-              <clipPath id="clip">
-                <rect class="square s1" x="0" y="0" rx="12" ry="12" height="90" width="90"></rect>
-                <rect class="square s2" x="100" y="0" rx="12" ry="12" height="90" width="90"></rect>
-                <rect class="square s3" x="200" y="0" rx="12" ry="12" height="90" width="90"></rect>
-                <rect class="square s4" x="0" y="100" rx="12" ry="12" height="90" width="90"></rect>
-                <rect class="square s5" x="200" y="100" rx="12" ry="12" height="90" width="90"></rect>
-                <rect class="square s6" x="0" y="200" rx="12" ry="12" height="90" width="90"></rect>
-                <rect class="square s7" x="100" y="200" rx="12" ry="12" height="90" width="90"></rect>
-              </clipPath>
-            </defs>
-            <rect class="gradient" clip-path="url('#clip')" height="300" width="300"></rect>
+        <div v-if="projectLoading"  class="flex justify-center">
+          <svg  class="animate-spin text-center  h-8 w-8 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
         </div>
         <form v-else @submit.prevent="saveProject" class="animate-fade-in-down">
@@ -201,6 +183,7 @@
                             v-model="model.title"
                             autocomplete="project_title"
                             class="mt-1 focus:ring-gray-500 focus:border-gray-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                            placeholder="Project title"
                           />
                         </div>
                         <!-- /title -->
@@ -224,6 +207,23 @@
                         </div>
                         <!-- /description -->
 
+                        <!-- url -->
+                        <div>
+                          <label for="url" class="block text-sm font-medium text-gray-700"
+                            >Project Url</label
+                          >
+                          <input
+                            type="text"
+                            name="url"
+                            id="url"
+                            v-model="model.url"
+                            autocomplete="project_url"
+                            class="mt-1 focus:ring-gray-500 focus:border-gray-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                            placeholder="Url"
+                          />
+                        </div>
+                        <!-- /url -->
+
                         <!-- status -->
                         <div class="flex items-start">
                           <div class="flex items-center h-5">
@@ -231,8 +231,9 @@
                               id="status"
                               name="status"
                               type="checkbox"
+                              :checked="model.status"
                               v-model="model.status"
-                              class="focus:ring-gray-500 h-4 w-4 text-gray-800 border-gray-300 rounded"
+                              :class="{'focus:ring-gray-500': model.status, 'h-4': true, 'w-4': true, 'text-gray-800': true, 'border-gray-300': true, 'rounded': true}"
                             />
                           </div>
                           <div class="ml-3 text-sm">
@@ -254,6 +255,13 @@
         </form>
       </div>
     </main>
+    <div
+      v-if="notification.show"
+      class="fixed w-[300px] right-4 bottom-4 py-2 px-4 text-white rounded-full animate-fade-in-down"
+      :class="[notification.type === 'success' ? 'bg-emerald-500' : 'bg-red-500']"
+    >
+      {{ notification.message }}
+  </div>
   </div>
 </template>
 
@@ -318,14 +326,18 @@ import { useRoute, useRouter } from "vue-router";
 const router = useRouter();
 const route = useRoute();
 
-// Get survey loading state, which only changes when we fetch project from backend
+// Get projeCT loading state, which only changes when we fetch project from backend
 const projectLoading = computed(() => store.state.currentProject.loading);
+
+//get notifications 
+const notification = computed(() => store.state.notification);
 
 
 // Create project
 let model = ref({
   title: "",
   slug: "",
+  url: "",
   status: false,
   description: null,
   image_url: null,
@@ -337,8 +349,7 @@ watch(
   (newVal, oldVal) => {
     model.value = {
       ...JSON.parse(JSON.stringify(newVal)),
-      status: newVal.status != 'draft',
-      //status: !!newVal.status,
+      status: !!newVal.status,
     };
   }
 );
@@ -369,15 +380,15 @@ function onImageChoose(ev) {
  * Create or update project
  */
  function saveProject() {
-  // let action = "created";
-  // if (model.value.id) {
-  //   action = "updated";
-  // }
+  let action = "created";
+  if (model.value.id) {
+    action = "updated";
+  }
   store.dispatch("saveProject", { ...model.value }).then(({ data }) => {
-    // store.commit("notify", {
-    //   type: "success",
-    //   message: "The Project was successfully " + action,
-    // });
+    store.commit("notify", {
+      type: "success",
+      message: "The Project was successfully " + action,
+    });
     router.push({
       name: "ProjectView",
       params: { id: data.data.id },
@@ -402,135 +413,4 @@ function deleteProject(){
 </script>
 
 <style scoped>
-
-.gradient {
-  animation-iteration-count: infinite;
-  animation-duration: 1s;
-  fill: url('#gradient-fill');
-}
-.square {
-  animation-iteration-count: infinite;
-  animation-duration: 2s;
-  transition-timing-function: ease-in-out;
-}
-
-.s1 {
-  animation-name: slide-1;
-}
-
-.s2 {
-  animation-name: slide-2;
-}
-
-.s3 {
-  animation-name: slide-3;
-}
-
-.s4 {
-  animation-name: slide-4;
-}
-
-.s5 {
-  animation-name: slide-5;
-}
-
-.s6 {
-  animation-name: slide-6;
-}
-
-.s7 {
-  animation-name: slide-7;
-}
-
-@keyframes slide-1 {
-  37.5% {
-    transform: translateX(0px);
-  }
-  50% {
-    transform: translateX(100px);
-  }
-  100% {
-    transform: translateX(100px);
-  }
-}
-
-@keyframes slide-2 {
-  25% {
-    transform: translateX(0px);
-  }
-  37.5% {
-    transform: translateX(100px);
-  }
-  100% {
-    transform: translateX(100px);
-  }
-}
-
-@keyframes slide-3 {
-  12.5% {
-    transform: translateY(0px);
-  }
-  25% {
-    transform: translateY(100px);
-  }
-  100% {
-    transform: translateY(100px);
-  }
-}
-
-@keyframes slide-4 {
-  50% {
-    transform: translateY(0px);
-  }
-  62.5% {
-    transform: translateY(-100px);
-  }
-  100% {
-    transform: translateY(-100px);
-  }
-}
-
-@keyframes slide-5 {
-  12.5% {
-    transform: translate(-100px, 0px);
-  }
-  87.5% {
-    transform: translate(-100px, 0px);
-  }
-  100% {
-    transform: translate(-100px, 100px);
-  }
-}
-
-@keyframes slide-6 {
-  62.5% {
-    transform: translateY(0px);
-  }
-  75% {
-    transform: translateY(-100px);
-  }
-  100% {
-    transform: translateY(-100px);
-  }
-}
-
-@keyframes slide-7 {
-  75%  {
-    transform: translateX(0px);
-  }
-  87.5% {
-    transform: translateX(-100px);
-  }
-  100% {
-    transform: translateX(-100px);
-  }
-}
-.con {
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
 </style>

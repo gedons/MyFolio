@@ -1,6 +1,7 @@
 import { createStore } from "vuex";
 import axiosClient from "../axios";
 
+
 const store = createStore({
     state:{
         user:{
@@ -9,14 +10,37 @@ const store = createStore({
         },
         projects: {
           loading: false,
-          // links: [],
+          links: [],
           data: []
+        },
+
+        dashboard: {
+          loading: false,
+          data: {}
         },
 
         currentProject: {
           data: {},
           loading: false,
         },
+
+        //Admin/blog
+        currentBlog: {
+          data: {},
+          loading: false,
+        },
+        blogs: {
+          loading: false,
+          links: [],
+          data: []
+        },
+
+         notification: {
+          show: false,
+          type: null,
+          message: null
+        },
+        
     },
     getters:{},
     actions:{
@@ -56,9 +80,10 @@ const store = createStore({
             return response;
           },
           
-          getProjects({ commit }) {
+          getProjects({ commit },  {url = null} = {}) {
             commit('setProjectsLoading', true)
-            return axiosClient.get("/project").then((res) => {
+            url = url || "/project";
+            return axiosClient.get(url).then((res) => {
               commit('setProjectsLoading', false)
               commit("setProjects", res.data);
               return res;
@@ -87,6 +112,88 @@ const store = createStore({
               return res;
             });
           },
+
+          getDashboardData({commit}) {
+            commit('dashboardLoading', true)
+            return axiosClient.get(`/dashboard`)
+            .then((res) => {
+              commit('dashboardLoading', false)
+              commit('setDashboardData', res.data)
+              return res;
+            })
+            .catch(error => {
+              commit('dashboardLoading', false)
+              return error;
+            })
+      
+          },
+
+          //Admin/blog
+          saveBlog({ commit, dispatch }, blog) {
+            delete blog.image_url;
+       
+             let response;
+             if (blog.id) {
+               response = axiosClient
+                 .put(`/blog/${blog.id}`, blog)
+                 .then((res) => {
+                   commit('setCurrentBlog', res.data)
+                   return res;
+                 });
+             } else {
+               response = axiosClient.post("/blog", blog).then((res) => {
+                 commit('setCurrentBlog', res.data)
+                 return res;
+               });
+             }
+       
+             return response;
+           },
+           
+           getBlogs({ commit },  {url = null} = {}) {
+             commit('setBlogsLoading', true)
+             url = url || "/blog";
+             return axiosClient.get(url).then((res) => {
+               commit('setBlogsLoading', false)
+               commit("setBlogs", res.data);
+               return res;
+             });
+           },
+ 
+           getBlog({ commit }, id) {
+             commit("setCurrentBlogLoading", true);
+             return axiosClient
+               .get(`/blog/${id}`)
+               .then((res) => {
+                 commit("setCurrentBlog", res.data);
+                 commit("setCurrentBlogLoading", false);
+                 return res;
+               })
+               .catch((err) => {
+                 commit("setCurrentBlogLoading", false);
+                 throw err;
+               });
+           },
+ 
+           deleteBlog({ dispatch }, id) {
+             return axiosClient.delete(`/blog/${id}`)
+             .then((res) => {
+               dispatch('getBlogs')
+               return res;
+             });
+           },
+ 
+
+          //front view projects
+          getFrontProjects({ commit }) {
+           // commit('setProjectsLoading', true)
+            return axiosClient.get("/view/projects").then((res) => {
+             // commit('setProjectsLoading', false)
+              commit("setFrontProjects", res.data);
+              return res;
+            });
+          },
+
     },
     mutations:{
         logout: (state) => {
@@ -112,8 +219,44 @@ const store = createStore({
             state.projects.loading = loading;
           },
           setProjects: (state, projects) => {
-            //state.projects.links = projects.meta.links;
+            state.projects.links = projects.meta.links;
             state.projects.data = projects.data;
+          },
+          notify:(state, {message, type}) =>{
+            state.notification.show = true;
+            state.notification.type = type;
+            state.notification.message = message;
+            setTimeout(() => {
+              state.notification.show = false;
+            }, 3000)
+          },
+
+          dashboardLoading: (state, loading) => {
+            state.dashboard.loading = loading;
+          },
+          setDashboardData: (state, data) => {
+            state.dashboard.data = data
+          },
+
+          //Admin/blog
+          setCurrentBlogLoading: (state, loading) => {
+            state.currentBlog.loading = loading;
+          },
+          setCurrentBlog: (state, blog) => {
+            state.currentBlog.data = blog.data;
+          },
+
+          setBlogsLoading: (state, loading) => {
+            state.blogs.loading = loading;
+          },
+          setBlogs: (state, blogs) => {
+            state.blogs.links = blogs.meta.links;
+            state.blogs.data = blogs.data;
+          },
+
+          //front
+          setFrontBlogs: (state, blogs) => {
+            state.blogs.data = blogs.data;
           },
 
     },

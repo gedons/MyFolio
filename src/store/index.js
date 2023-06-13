@@ -255,9 +255,9 @@ const store = createStore({
           },
 
           //front
-          setFrontBlogs: (state, blogs) => {
-            state.blogs.data = blogs.data;
-          },
+          // setFrontBlogs: (state, blogs) => {
+          //   state.blogs.data = blogs.data;
+          // },
 
     },
     modules:{}

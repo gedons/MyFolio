@@ -114,7 +114,7 @@
                       Edit
                     </router-link>
                     <div class="flex items-center">
-                      <TButton :href="`/view/blog/${blog.slug}`" circle link target="_blank">
+                      <TButton :href="blog.url" circle link target="_blank">
                         <LinkIcon class="w-5 h-5" />
                       </TButton>
                       <button v-if="blog.id" type="button" @click="deleteBlog(blog)" class="h-8 w-8 flex items-center justify-center rounded-full border border-transparent text-sm text-red-500 focus:ring-2 focus:ring-offset-2 focus:ring-red-500">

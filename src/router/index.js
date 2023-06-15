@@ -9,6 +9,7 @@ import ABlogView from "../views/Admin/ABlogView.vue";
 import Message from "../views/Admin/Message.vue";
 import Login from "../views/Login.vue";
 import Blog from "../views/Blog.vue";
+import NotFound from "../views/NotFound.vue";
 
 const routes = [
     {
@@ -48,6 +49,12 @@ const routes = [
       name: 'Blog',
       component: Blog
     },
+
+    {
+      path: '/404',
+      name: 'NotFound',
+      component: NotFound
+    }
 ];
 
 

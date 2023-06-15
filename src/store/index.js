@@ -24,6 +24,23 @@ const store = createStore({
           loading: false,
         },
 
+        notification: {
+          show: false,
+          type: null,
+          message: null
+        },        
+
+      //Front project/blog
+       frontProject: {
+          data: {},
+          loading: false,
+        },
+        frontBlog:{
+          data: {},
+          loading: false,
+        },
+      // end Front
+
         //Admin/blog
         currentBlog: {
           data: {},
@@ -34,12 +51,9 @@ const store = createStore({
           links: [],
           data: []
         },
+        //end Admin/blog
 
-         notification: {
-          show: false,
-          type: null,
-          message: null
-        },
+
         
     },
     getters:{},
@@ -181,18 +195,29 @@ const store = createStore({
                dispatch('getBlogs')
                return res;
              });
-           },
- 
+           },         
+          //End Admin/blog
 
-          //front view projects
+
+          //front view
           getFrontProjects({ commit }) {
-           // commit('setProjectsLoading', true)
+            commit('setFrontProjectsLoading', true)
             return axiosClient.get("/view/projects").then((res) => {
-             // commit('setProjectsLoading', false)
+              commit('setFrontProjectsLoading', false)
               commit("setFrontProjects", res.data);
               return res;
             });
           },
+
+          getFrontBlogs({ commit }) {
+            commit('setFrontBlogsLoading', true)
+            return axiosClient.get("/view/blogs").then((res) => {
+              commit('setFrontBlogsLoading', false)
+              commit("setFrontBlogs", res.data);
+              return res;
+            });
+          },
+          // end front view
 
     },
     mutations:{
@@ -253,15 +278,23 @@ const store = createStore({
             state.blogs.links = blogs.meta.links;
             state.blogs.data = blogs.data;
           },
+          //End Admin/blog
 
-          //front
 
-          setFrontProjects: (state, projects) => {           
-            state.projects.data = projects.data;
+          //front view
+          setFrontProjects: (state, frontProject) => {           
+            state.frontProject.data = frontProject.data;
           },
-          // setFrontBlogs: (state, blogs) => {
-          //   state.blogs.data = blogs.data;
-          // },
+          setFrontProjectsLoading: (state, loading) => {
+            state.frontProject.loading = loading;
+          },
+          setFrontBlogsLoading: (state, loading) => {
+            state.frontBlog.loading = loading;
+          },
+          setFrontBlogs: (state, frontBlog) => {           
+            state.frontBlog.data = frontBlog.data;
+          },        
+          //End front view
 
     },
     modules:{}

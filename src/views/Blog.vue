@@ -4,7 +4,8 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <!-- Logo -->
-          <div class="flex-shrink-0">
+          <div class="flex-shrink-0 inline-flex items-center justify-center space-x-2">
+            <img class="block mx-auto rounded-full overflow-hidden w-8 h-8 transform transition ease-out duration-150 border-2 border-gray-50 hover:border-white hover:shadow-md hover:scale-125 active:border-gray-50 active:shadow-sm active:scale-110" src="https://lh3.googleusercontent.com/a/AAcHTtfzX9Ny9Y5dpsP3i060Z_p1TYLoxHjlb2N1a5GgbA=s288-c-no" alt="Avatar Photo">
             <router-link :to="{name: 'Index'}" class="text-white font-bold text-xl">Gedoni Ani</router-link>
           </div>
   

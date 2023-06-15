@@ -185,7 +185,7 @@
 
   methods: {
     getContacts() {
-      axios.get('http://localhost:8000/api/view/show')
+      axios.get('https://watchmanmagazineonline.com/portfolio/api/view/show')
         .then(response => {
           this.contacts = response.data;
         })

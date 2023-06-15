@@ -14,9 +14,12 @@
     "@tailwindcss/forms": "^0.5.3",
     "axios": "^1.4.0",
     "moment": "^2.29.4",
+    "nodemailer": "^6.9.3",
     "vue": "^3.2.47",
     "vue-router": "^4.2.2",
     "vue-scrollto": "^2.20.0",
+    "vue-toast-notification": "3.0",
+    "vue-toastification": "^2.0.0-rc.5",
     "vuex": "^4.0.2"
   },
   "devDependencies": {

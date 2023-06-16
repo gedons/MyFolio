@@ -117,6 +117,7 @@
   </template>
   
   <script>
+  import { inject } from '@vercel/analytics';
  
   export default {
   data() {
@@ -128,7 +129,9 @@
   methods: {
  
   },
-  computed: {},
+  mounted() {
+    inject();
+  },
   
   }
   </script>

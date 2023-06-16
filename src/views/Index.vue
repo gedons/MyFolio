@@ -260,6 +260,8 @@
 <script>
 import VueScrollTo  from 'vue-scrollto';
 import axios from 'axios';
+import { inject } from '@vercel/analytics';
+ 
 // import {useToast} from 'vue-toast-notification';
 // import 'vue-toast-notification/dist/theme-sugar.css';
 
@@ -366,6 +368,7 @@ scrollToSection(selector) {
 },
 
 mounted() {
+  inject();
   this.typeText1();
   // this.typeText2();
   window.addEventListener('scroll', this.toggleScrollToTopButtonVisibility);

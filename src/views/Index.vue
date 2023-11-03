@@ -86,7 +86,7 @@
               <!-- <svg stroke="currentColor" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" class="opacity-50 hi-outline hi-plus-circle inline-block w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> -->
               <span>About Me</span>
             </a>
-            <a href="https://drive.google.com/file/d/1YF34PGY0Pg3Akt3Nk4_6LCoBZsKy-SIR/view?usp=drive_link" class="inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-6 py-4 ml-2 leading-6 rounded border-gray-700 bg-gray-800 text-white hover:text-white hover:bg-gray-900 hover:border-gray-800 focus:ring focus:ring-gray-500 focus:ring-opacity-50 active:bg-gray-700 active:border-gray-700 cursor-pointer" target="_blank">                
+            <a href="https://drive.google.com/file/d/1mIt63EYJBtuBkXGDMRZj27OZDHSe_7Za/view?usp=sharing" class="inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-6 py-4 ml-2 leading-6 rounded border-gray-700 bg-gray-800 text-white hover:text-white hover:bg-gray-900 hover:border-gray-800 focus:ring focus:ring-gray-500 focus:ring-opacity-50 active:bg-gray-700 active:border-gray-700 cursor-pointer" target="_blank">                
               <span>My Resume</span>
             </a>
           </div>
@@ -106,7 +106,7 @@
     <div class="space-y-16 container xl:max-w-7xl mx-auto px-4 py-16 lg:px-8 lg:py-4">
       <div class="text-center">
         <h2 class="text-3xl md:text-4xl font-extrabold mt-11">
-          Portfolio
+          Projects
         </h2>
       </div>
    

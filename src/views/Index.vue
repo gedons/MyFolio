@@ -146,7 +146,7 @@
       </div>
       <div class="text-center">
         <h3 class="text-lg md:text-xl md:leading-relaxed font-medium text-gray-600 lg:w-2/3 mx-auto">
-          I am a fullstack web developer with over 7+ years of experience in crafting exceptional user experiences through codes with tools like: Python(Django), Nodejs, Vuejs, NuxtJs, PHP(Laravel), Tailwind CSS, Apis, Mysql, Mogodb.
+          I am a fullstack web developer with over 5+ years of experience in crafting exceptional user experiences through codes with tools like: Python(Django), Nodejs, Vuejs, NuxtJs, PHP(Laravel), Tailwind CSS, Apis, Mysql, Mogodb.
           In addition to my web development expertise, I am also venturing into the exciting realm of AI. I am currently exploring the vast possibilities offered by Google Vertex AI, OpenAI APIs and Azure AI.
           These cutting-edge platforms enable me to leverage the power of artificial intelligence and machine learning to create intelligent and efficient solutions.
         </h3>

@@ -111,13 +111,13 @@
       </div>
    
       <!-- PORTFOLIO -->
-      <div v-if="frontProject.loading" class="flex justify-center">
+      <div  class="flex justify-center">
         <svg  class="animate-spin text-center  h-8 w-8 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
       </div>
-      <div v-else class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 opacity-0 animate-fade-in-down">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 opacity-0 animate-fade-in-down">
         <div v-for="(project, ind) in frontProject.data" :key="project.id" class="p-5 bg-gray-100 border-2 border-white shadow-sm hover:border-indigo-700 transition rounded-lg animate-fade-in-down"  :style="{animationDelay: `${ind * 0.1}s`}">            
           <img :src="project.image_url" class="w-full h-40 object-cover">
           <h4 class="text-lg font-bold mb-2">
@@ -146,7 +146,7 @@
       </div>
       <div class="text-center">
         <h3 class="text-lg md:text-xl md:leading-relaxed font-medium text-gray-600 lg:w-2/3 mx-auto">
-          I am a fullstack web developer with over 5+ years of experience in crafting exceptional user experiences through codes with tools like: Python(Django), Nodejs, Vuejs, NuxtJs, PHP(Laravel), Tailwind CSS, Apis, Mysql, Mogodb.
+          I am a software engineer with over 5+ years of experience in crafting exceptional user experiences through codes with tools like: Python(Django), Nodejs, Vuejs, NuxtJs, PHP(Laravel), Tailwind CSS, Apis, Mysql, Mogodb.
           In addition to my web development expertise, I am also venturing into the exciting realm of AI. I am currently exploring the vast possibilities offered by Google Vertex AI, OpenAI APIs and Azure AI.
           These cutting-edge platforms enable me to leverage the power of artificial intelligence and machine learning to create intelligent and efficient solutions.
         </h3>
@@ -300,56 +300,12 @@ methods: {
   },
 
   submitForm() {
-
-    const formData = {
-        name: this.name,
-        email: this.email,
-        message: this.message,
-      };
-        // Make an HTTP request to the Laravel api route
-        axios.post('https://watchmanmagazineonline.com/portfolio/api/view/contact', formData)
-      .then(response => {
-        // Handle the response here (display success message, clear form, etc.)
-        console.log(response);
-
-        // Show success flash message
-          //  this.$toast.success('Form submitted successfully', {
-          //    position: 'bottom-right',
-          //    duration: 3000,
-          //    pauseOnHover: true,  
-          //  });
-          this.name = '';
-          this.email = '';
-          this.message = '';
-
-           // Save form data to the backend database
-           this.saveFormData(formData);
-      })
-      .catch(error => {
-        // Handle any errors
-        console.error(error);
-
-      // //   // Show error flash message
-      //  this.toast.error('An error occurred. Please try again later', {
-      //   position: 'bottom-right',
-      //   duration: 3000,
-      //   pauseOnHover: true,  
-      //  });
-    });
  
   },
 
   saveFormData(formData) {
-      axios.post('https://watchmanmagazineonline.com/portfolio/api/view/store', formData)
-        .then(response => {
-          // Handle the response here
-          console.log(response);
-        })
-        .catch(error => {
-          // Handle any errors
-          console.error(error);
-        });
-    },
+
+  },
 
 scrollToSection(selector) {
     VueScrollTo.scrollTo(selector, 500, {

@@ -63,13 +63,16 @@ const router = createRouter({
     routes,
   });
 
-  router.beforeEach((to, from, next) => {
-    if (to.meta.requiresAuth && !store.state.user.token) {
-      next({ name: "Login" });
-    } else if (store.state.user.token && to.meta.isGuest) {
-      next({ name: "Admin" });
+  router.beforeEach((to, from, next) => {    
+    const isUserLoggedIn = store.getters['isUserAuthenticated'];
+  
+    const isUserRoute = to.matched.some((record) => record.meta.isUser);
+  
+    if (isUserRoute && !isUserLoggedIn) {
+      // Redirect if user route and not logged in as user
+      next('/login');
     } else {
-      next();
+      next(); // Proceed to the route
     }
   });
 

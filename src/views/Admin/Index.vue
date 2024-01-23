@@ -83,7 +83,7 @@
                 <div
                   class="text-8xl pb-4 font-semibold flex-1 flex items-center justify-center"
                 >
-                  {{ data.totalProjects }}
+                   
                 </div>
               </div>
               <!-- /project count -->
@@ -94,10 +94,10 @@
                 <div
                 class="text-8xl pb-4  font-semibold flex-1 flex items-center justify-center"
               >
-                {{ data.totalPosts }}
+                 
               </div>
-                <div v-if="data.latestPosts && data.latestPosts.length > 0" class="text-left">
-                  <a
+                <div class="text-left">
+                  <!-- <a
                   v-for="post in data.latestPosts"
                   :key="post.id"
                   :href="post.url"
@@ -109,9 +109,9 @@
                     Answer Made at:
                     <i class="font-semibold">{{ formatDate(post.created_at) }}</i>
                   </small>
-                </a>
+                </a> -->
                 </div>
-                <div v-else class="text-gray-600 text-center py-16">
+                <div class="text-gray-600 text-center py-16">
                   You have not made any post yet
                 </div>
               </div>
@@ -120,21 +120,21 @@
               <!-- latest project -->
               <div class="order-3 lg:order-1 row-span-2 bg-white shadow-md p-3 text-center flex flex-col animate-fade-in-down" style="animation-delay: 0.2s">
               <h2 class="text-3xl mb-3 text-center font-semibold">Latest Project</h2>
-              <div v-if="data.latestProject">
+              <div>
                 <img
-                  :src="data.latestProject.image_url"
+                  src=""
                   class="w-[240px] h-30 mx-auto"
                   alt=""
                 />
-                <h3 class="font-bold text-xl mb-3">{{ data.latestProject.title }}</h3>
+                <h3 class="font-bold text-xl mb-3"></h3>
                 <div class="flex justify-between text-sm mb-1">
                   <div class="font-semibold">Created Date:</div>
-                  <div>{{ formatDate(data.latestProject.created_at) }}</div>
+                  <div></div>
                 </div>
 
                 <div class="flex justify-between text-sm mb-1">
                   <div class="font-semibold">Status:</div>
-                  <div>{{ data.latestProject.status ? "Active" : "Draft" }}</div>
+                  <div>"Active" : "Draft" </div>
                 </div>
                 
                 <div class="flex justify-between">
@@ -147,7 +147,7 @@
                   rounded
                   border
                  "
-                    :to="{ name: 'ProjectView', params: { id: data.latestProject.id } }"
+                    :to="{ name: 'Index'}"
                     link
                   >
                     <PencilIcon class="w-4 h-4 mr-2 inline-block" />
@@ -172,7 +172,7 @@
                     
                 </div>
               </div>
-              <div v-else class="text-gray-600 text-center py-16">
+              <div class="text-gray-600 text-center py-16">
                 Your don't have any project yet
               </div>
               </div>
@@ -184,22 +184,7 @@
   </div>
 </template>
 
-<script setup>
-import { computed } from "vue";
-import { useStore } from "vuex";
-import { PencilIcon, PlusIcon } from '@heroicons/vue/24/outline';
-
-
-
-
-const store = useStore();
-
-const loading = computed(() => store.state.dashboard.loading);
-const data = computed(() => store.state.dashboard.data);
-
-store.dispatch("getDashboardData");
-
-</script>
+ 
 
 <script>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';

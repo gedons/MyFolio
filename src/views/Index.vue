@@ -111,24 +111,31 @@
       </div>
    
       <!-- PORTFOLIO -->
-      <div  class="flex justify-center">
+      <div v-if="loading"  class="flex justify-center">
         <svg  class="animate-spin text-center  h-8 w-8 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
         </svg>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 opacity-0 animate-fade-in-down">
-        <div class="p-5 bg-gray-100 border-2 border-white shadow-sm hover:border-indigo-700 transition rounded-lg animate-fade-in-down"  :style="{animationDelay: `${ind * 0.1}s`}">            
-          <img class="w-full h-40 object-cover">
-          <h4 class="text-lg font-bold mb-2">
-           sfsf
-          </h4>
-          <div  class="leading-relaxed font-medium text-gray-600"></div>
-          <a href="#" class="mt-2 inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-blue-700 bg-indigo-700 text-white hover:text-white hover:bg-indigo-800 hover:border-blue-800 focus:ring focus:ring-blue-500 focus:ring-opacity-50 active:bg-blue-700 active:border-blue-700" target="_blank">
-              <span>View</span>
+      <div v-else  class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 opacity-0 animate-fade-in-down">
+          <div v-if="projects.length === 0" class="p-2.5 xl:p-5">
+            <p class="font-semibold text-sm leading-5 text-gray-700">No Project Available!!!</p>
+          </div>  
+   
+          <div v-else v-for="(project, ind) in projects" :key="project._id" class="p-5 bg-gray-100 border-2 border-white shadow-sm hover:border-indigo-700 transition rounded-lg animate-fade-in-down"  :style="{animationDelay: `${ind * 0.1}s`}">            
+            <img :src="project.imageUrl" class="w-full h-40 object-cover">
+            <h4 class="text-lg font-bold mb-2">
+            {{project.title}}
+            </h4>
+            <p class="leading-relaxed font-medium text-gray-600">{{ truncateDescription(project.description, 100) }}</p>
+            <a :href="project.url" class="mt-2 inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-blue-700 bg-indigo-700 text-white hover:text-white hover:bg-indigo-800 hover:border-blue-800 focus:ring focus:ring-blue-500 focus:ring-opacity-50 active:bg-blue-700 active:border-blue-700" target="_blank">
+                <span>Live url</span>
+            </a>
+            <a :href="project.url" class="mt-2 inline-flex justify-end items-center space-x-2 text-sm font-semibold focus:outline-none px-3 py-2 leading-6 text-gray-800" target="_blank">
+              <span>More Details</span>
           </a>
-        </div>
-
+          </div>
+        
       </div>          
 
     </div>
@@ -261,6 +268,7 @@
 import VueScrollTo  from 'vue-scrollto';
 import axios from 'axios';
 import { inject } from '@vercel/analytics';
+import api from '../api';
  
 // import {useToast} from 'vue-toast-notification';
 // import 'vue-toast-notification/dist/theme-sugar.css';
@@ -277,17 +285,17 @@ data() {
     name: '',
     email: '',
     message: '',
-    imagePath: 'https://storage.googleapis.com/portfolio-nerdy/Banner.png' 
+    imagePath: 'https://www.dropbox.com/scl/fi/x06urdx5elij4krlpgq09/Banner.png?rlkey=mu9ad9kly2illt0ovt4xoh0gs&raw=1' ,
+    loading: true,
+    categories: [],
+    projects: [],
   }
 },
 
-// setup() {
-//     const $toast = useToast();
-
-//     return {
-//       $toast,
-//     };
-//   },
+created() {          
+  this.fetchCategories();
+  this.fetchProjects();
+  },
 
 
 methods: {
@@ -298,6 +306,36 @@ methods: {
       setTimeout(this.typeText1, 100); // Adjust the typing speed (in milliseconds) here
     }
   },
+
+  fetchProjects(){
+        axios.get(`${api}/projects/all`).then((response) => {
+            this.projects = response.data.projects;    
+            this.loading = false;       
+            })
+            .catch((error) => {
+            console.error('Error getting projects:', error);   
+            this.loading = false;       
+        });      
+  },
+
+  fetchCategories() {
+        axios.get(`${api}/categories/all`).then((response) => {
+        this.categories = response.data.categories;        
+        this.loading = false;     
+        })
+        .catch((error) => {
+        console.error('Error getting categories:', error);     
+        this.loading = false;       
+        });      
+  }, 
+
+  truncateDescription(description, maxLength) {
+      if (description.length > maxLength) {
+        return description.slice(0, maxLength) + '...';
+      } else {
+        return description;
+      }
+    },
 
   submitForm() {
  

@@ -2,14 +2,8 @@ import { createRouter, createWebHistory } from "vue-router";
 import store from "../store";
 import Index from "../views/Index.vue";
 import Admin from "../views/Admin/Index.vue";
-import Project from "../views/Admin/Project.vue";
-import ProjectView from "../views/Admin/ProjectView.vue";
-import Ablog from "../views/Admin/ABlog.vue";
-import ABlogView from "../views/Admin/ABlogView.vue";
-import Message from "../views/Admin/Message.vue";
 import Login from "../views/Login.vue";
 import Blog from "../views/Blog.vue";
-import NotFound from "../views/NotFound.vue";
 
 const routes = [
     {
@@ -21,27 +15,19 @@ const routes = [
 
 
     {
-      path: "/admin",
+      path: "/admin/dashboard",
       name: "Admin",
       component: Admin,
-      meta: { requiresAuth: true },
+      meta: {
+        requiresAuth: true,
+        isAdmin: true,
+      },
     },
-    // Admin Project
-    { path: "/admin/projects", name: "Project", component: Project, meta: { requiresAuth: true }, },    
-    { path: "/admin/message", name: "Message", component: Message, meta: { requiresAuth: true }, },
-    { path: "/admin/project/create", name: "ProjectCreate", component: ProjectView, meta: { requiresAuth: true }, },
-    { path: "/admin/project/:id", name: "ProjectView", component: ProjectView, meta: { requiresAuth: true }, },
-
-    // Admin Blog
-    { path: "/admin/blog", name: "Ablog", component: Ablog, meta: { requiresAuth: true }, },
-    { path: "/admin/blog/create", name: "ABlogCreate", component: ABlogView, meta: { requiresAuth: true }, },
-    { path: "/admin/blog/:id", name: "ABlogView", component: ABlogView, meta: { requiresAuth: true }, },
 
     {
       path: "/login",
       name: "Login",
-      component: Login,
-      meta: {isGuest: true},
+      component: Login
     },
 
     {
@@ -50,11 +36,11 @@ const routes = [
       component: Blog
     },
 
-    {
-      path: '/404',
-      name: 'NotFound',
-      component: NotFound
-    }
+    // {
+    //   path: '/404',
+    //   name: 'NotFound',
+    //   component: NotFound
+    // }
 ];
 
 
@@ -63,16 +49,14 @@ const router = createRouter({
     routes,
   });
 
-  router.beforeEach((to, from, next) => {    
-    const isUserLoggedIn = store.getters['isUserAuthenticated'];
+  router.beforeEach((to, from, next) => {
+    const isAdminLoggedIn = store.getters['isAdminAuthenticated'];
+    const isAdminRoute = to.matched.some((record) => record.meta.isAdmin);
   
-    const isUserRoute = to.matched.some((record) => record.meta.isUser);
-  
-    if (isUserRoute && !isUserLoggedIn) {
-      // Redirect if user route and not logged in as user
+    if (isAdminRoute && !isAdminLoggedIn) {      
       next('/login');
     } else {
-      next(); // Proceed to the route
+      next();  
     }
   });
 

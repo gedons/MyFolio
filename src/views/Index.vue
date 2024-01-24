@@ -238,7 +238,7 @@
   <footer id="page-footer" class="flex flex-none items-center bg-gray-200 mt-10">
     <div class="text-center flex flex-col md:text-left md:flex-row md:justify-between text-sm container xl:max-w-7xl mx-auto px-4 lg:px-8">
       <div class="pt-4 pb-1 md:pb-4">
-        <a href="#" class="font-semibold hover:text-indigo-700 focus:outline-none" target="_blank">Gedoni Ani</a> © 2023
+        <a href="#" class="font-semibold hover:text-indigo-700 focus:outline-none" target="_blank">Gedoni Ani</a> © 2024
       </div>
       <div class="pb-4 pt-1 md:pt-4 inline-flex items-center justify-center">
         <a href="https://www.linkedin.com/in/gedonidev/" class="hover:text-indigo-700" target=_blank>
@@ -374,22 +374,5 @@ beforeUnmount() {
 
 }
 </script>
-
-<script setup>
-import store from "../store";
-// import TButton from "../../components/TButton.vue";
-import { computed } from "vue";
-// import { LinkIcon } from '@heroicons/vue/24/outline';
-
-
-const frontProject = computed(() => store.state.frontProject);
-
-store.dispatch("getFrontProjects");
-
-
-</script>
-
-<style scoped>
-</style>
 
 

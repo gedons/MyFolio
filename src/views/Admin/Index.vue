@@ -77,106 +77,102 @@
           </div>
             <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 text-gray-900">
             
-              <!-- project count -->
-              <div class="order-1 lg:order-2 bg-white shadow-md p-3 text-center flex flex-col animate-fade-in-down" style="animation-delay: 0.1s">
-                <h2 class="text-3xl mb-3 text-center font-semibold">Total Projects</h2>
+              <!-- Project count -->
+              <div class="order-1 lg:order-1 row-span-2 bg-white shadow-md p-3 text-center flex flex-col animate-fade-in-down" style="animation-delay: 0.2s">
+                <h2 class="text-3xl mb-3 text-center font-semibold">Project</h2>
+                  <div class="text-8xl pb-4 font-semibold flex-1 flex items-center justify-center">{{countProjects}}</div>
+                  <div class="flex justify-between">
+                    <router-link class="
+                      py-2
+                      px-3
+                      font-semibold
+                      focus:outline-none
+                      leading-6 
+                      rounded
+                      border
+                      hover:bg-gray-800
+                      hover:text-white
+                    "
+                      :to="{ name: 'Index'}"
+                      link
+                    >
+                      <PlusIcon class="w-4 h-4 inline-block" />
+                      New Project
+                  </router-link>
+
+                
+                  </div>
+                  <div class="text-gray-600 text-center py-16">
+                    You don't have any project yet
+                  </div>
+              </div>
+              <!-- /Project count -->
+            
+              <!-- blog count -->
+              <div class="order-2 lg:order-2 row-span-2 bg-white shadow-md p-3 text-center flex flex-col animate-fade-in-down" style="animation-delay: 0.2s">
+                <h2 class="text-3xl mb-3 text-center font-semibold">Blog</h2>
                 <div
                   class="text-8xl pb-4 font-semibold flex-1 flex items-center justify-center"
                 >
-                   
+                  {{countBlogs}}
                 </div>
-              </div>
-              <!-- /project count -->
-            
-              <!-- blog post -->
-              <div class="order-2 lg:order-2 row-span-2 bg-white shadow-md p-3 text-center flex flex-col animate-fade-in-down" style="animation-delay: 0.2s">
-                <h2 class="text-3xl mb-3 text-center font-semibold">Blog Post</h2>
-                <div
-                class="text-8xl pb-4  font-semibold flex-1 flex items-center justify-center"
-              >
-                 
-              </div>
-                <div class="text-left">
-                  <!-- <a
-                  v-for="post in data.latestPosts"
-                  :key="post.id"
-                  :href="post.url"
-                  class="block p-2 hover:bg-gray-100/90"
-                  target="_blank"
-                  >
-                  <div class="font-semibold">{{ post.title }}</div>
-                  <small>
-                    Answer Made at:
-                    <i class="font-semibold">{{ formatDate(post.created_at) }}</i>
-                  </small>
-                </a> -->
-                </div>
-                <div class="text-gray-600 text-center py-16">
-                  You have not made any post yet
-                </div>
-              </div>
-              <!-- /blog post -->
-
-              <!-- latest project -->
-              <div class="order-3 lg:order-1 row-span-2 bg-white shadow-md p-3 text-center flex flex-col animate-fade-in-down" style="animation-delay: 0.2s">
-              <h2 class="text-3xl mb-3 text-center font-semibold">Latest Project</h2>
-              <div>
-                <img
-                  src=""
-                  class="w-[240px] h-30 mx-auto"
-                  alt=""
-                />
-                <h3 class="font-bold text-xl mb-3"></h3>
-                <div class="flex justify-between text-sm mb-1">
-                  <div class="font-semibold">Created Date:</div>
-                  <div></div>
-                </div>
-
-                <div class="flex justify-between text-sm mb-1">
-                  <div class="font-semibold">Status:</div>
-                  <div>"Active" : "Draft" </div>
-                </div>
-                
                 <div class="flex justify-between">
                   <router-link class="
-                  py-2
-                  px-3
-                  font-semibold
-                  focus:outline-none
-                  leading-6 
-                  rounded
-                  border
-                 "
+                    py-2
+                    px-3
+                    font-semibold
+                    focus:outline-none
+                    leading-6 
+                    rounded
+                    border
+                    hover:bg-gray-800
+                    hover:text-white
+                  "
                     :to="{ name: 'Index'}"
                     link
                   >
-                    <PencilIcon class="w-4 h-4 mr-2 inline-block" />
-                    Edit Project
+                    <PlusIcon class="w-4 h-4 inline-block" />
+                    New Blog
                 </router-link>
 
-                <router-link class="
-                py-2
-                px-3
-                font-semibold
-                focus:outline-none
-                leading-6 
-                rounded
-                border
-               "
-                  :to="{ name: 'ProjectCreate' }"
-                  link
-                >
-                  <PlusIcon class="w-4 h-4 mr-2 inline-block" />
-                  New Project
-              </router-link>
-                    
+              
+                </div>
+                <div class="text-gray-600 text-center py-16">
+                  You don't have any blog yet
                 </div>
               </div>
-              <div class="text-gray-600 text-center py-16">
-                Your don't have any project yet
+              <!-- /blog count -->
+
+              <!-- total category -->
+              <div class="order-3 lg:order-1 row-span-2 bg-white shadow-md p-3 text-center flex flex-col animate-fade-in-down" style="animation-delay: 0.2s">
+                <h2 class="text-3xl mb-3 text-center font-semibold">Category</h2>
+                  <div class="text-8xl pb-4 font-semibold flex-1 flex items-center justify-center">{{countCategories}}</div>
+                  <div class="flex justify-between">
+                    <router-link class="
+                      py-2
+                      px-3
+                      font-semibold
+                      focus:outline-none
+                      leading-6 
+                      rounded
+                      border
+                      hover:bg-gray-800
+                      hover:text-white
+                    "
+                      :to="{ name: 'Index'}"
+                      link
+                    >
+                      <PlusIcon class="w-4 h-4 inline-block" />
+                      New Category
+                  </router-link>
+
+                
+                  </div>
+                  <div class="text-gray-600 text-center py-16">
+                    You don't have any project yet
+                  </div>
               </div>
-              </div>
-              <!-- /latest project -->
+              <!-- /total category -->
             </div>
           <!-- END Statistics: Simple with Action -->
       </div>
@@ -188,17 +184,17 @@
 
 <script>
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/vue';
-import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/vue/24/outline';
-import { useStore } from "vuex";
-import { computed } from "vue";
-import { useRouter } from "vue-router";
+import { Bars3Icon, BellIcon, XMarkIcon, PlusIcon } from '@heroicons/vue/24/outline';
 import moment from 'moment';
+import axios from 'axios';
+import { inject } from '@vercel/analytics';
+import api from '../../api';
 
 const navigation = [
   { name: 'Dashboard', to: { name: "Admin" }, current: true },
-  { name: 'Projects',  to: { name: "Project" }, current: false },
-  { name: 'Blog',  to: { name: "Ablog" }, current: false },
-  { name: 'Messages',  to: { name: "Message" }, current: false },
+  // { name: 'Projects',  to: { name: "Project" }, current: false },
+  // { name: 'Blog',  to: { name: "Ablog" }, current: false },
+  // { name: 'Messages',  to: { name: "Message" }, current: false },
 ]
 
 
@@ -214,33 +210,60 @@ export default {
     MenuItem,
     MenuItems,
     BellIcon,
+    PlusIcon,
     Notification,
   },
-  setup() {
-    const store = useStore();
-    const router = useRouter();
 
-   
-    function logout() {
-      store.dispatch("logout").then(() => {
-        router.push({
-          name: "Login",
-        });
-      });
-    }
-
-    //store.dispatch("getUser");
-
+  data() {
     return {
-      user: computed(() => store.state.user.data),
       navigation,
-      logout,
+      countProjects: [],
+      countBlogs: [],
+      countCategories: [],
     };
   },
+
+  created() {
+    this.totalProjects();
+    this.totalBlogs();
+    this.totalCategories();
+  },
+  
 
   methods: {
   formatDate(date) {
     return moment(date).fromNow();
+  },
+
+  totalProjects() {
+        axios.get(`${api}/projects/total/getTotalProjects`).then((response) => {
+        this.countProjects = response.data.totalProjects;        
+        this.loading = false;     
+        })
+        .catch((error) => {
+        console.error('Error getting total projects:', error);     
+        this.loading = false;       
+        });      
+  },
+  totalBlogs() {
+        axios.get(`${api}/blogs/total/getTotalBlogs`).then((response) => {
+        this.countBlogs = response.data.totalBlogs;        
+        this.loading = false;     
+        })
+        .catch((error) => {
+        console.error('Error getting total blogs:', error);     
+        this.loading = false;       
+        });      
+  },
+  totalCategories() {
+        axios.get(`${api}/categories/total/getTotalCategories`).then((response) => {
+        this.countCategories = response.data.totalCategories;        
+        this.loading = false;     
+        })
+        .catch((error) => {
+        console.error('Error getting total categories:', error);     
+        this.loading = false;       
+        });      
   },
 },
 };

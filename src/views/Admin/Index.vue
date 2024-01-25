@@ -81,7 +81,7 @@
               <div class="order-1 lg:order-1 row-span-2 bg-white shadow-md p-3 text-center flex flex-col animate-fade-in-down" style="animation-delay: 0.2s">
                 <h2 class="text-3xl mb-3 text-center font-semibold">Project</h2>
                   <div class="text-8xl pb-4 font-semibold flex-1 flex items-center justify-center">{{countProjects}}</div>
-                  <div class="flex justify-between">
+                  <div class="flex jitems-center justify-center">
                     <router-link class="
                       py-2
                       px-3
@@ -116,7 +116,7 @@
                 >
                   {{countBlogs}}
                 </div>
-                <div class="flex justify-between">
+                <div class="flex items-center justify-center">
                   <router-link class="
                     py-2
                     px-3
@@ -147,7 +147,7 @@
               <div class="order-3 lg:order-1 row-span-2 bg-white shadow-md p-3 text-center flex flex-col animate-fade-in-down" style="animation-delay: 0.2s">
                 <h2 class="text-3xl mb-3 text-center font-semibold">Category</h2>
                   <div class="text-8xl pb-4 font-semibold flex-1 flex items-center justify-center">{{countCategories}}</div>
-                  <div class="flex justify-between">
+                  <div class="flex items-center justify-center">
                     <router-link class="
                       py-2
                       px-3
@@ -192,7 +192,7 @@ import api from '../../api';
 
 const navigation = [
   { name: 'Dashboard', to: { name: "Admin" }, current: true },
-  // { name: 'Projects',  to: { name: "Project" }, current: false },
+  { name: 'Projects',  to: { name: "Projects" }, current: false },
   // { name: 'Blog',  to: { name: "Ablog" }, current: false },
   // { name: 'Messages',  to: { name: "Message" }, current: false },
 ]

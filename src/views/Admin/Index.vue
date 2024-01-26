@@ -217,9 +217,9 @@ export default {
   data() {
     return {
       navigation,
-      countProjects: [],
-      countBlogs: [],
-      countCategories: [],
+      countProjects: '',
+      countBlogs: '',
+      countCategories: '',
     };
   },
 

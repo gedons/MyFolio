@@ -109,7 +109,7 @@
           Projects
         </h2>
       </div>
-   
+    <pre>{{projects}}</pre>
       <!-- PORTFOLIO -->
       <div v-if="loading"  class="flex justify-center">
         <svg  class="animate-spin text-center  h-8 w-8 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -135,6 +135,7 @@
             <a :href="project.url" class="mt-2 inline-flex justify-center items-center space-x-2 border font-semibold focus:outline-none px-3 py-2 leading-6 rounded border-blue-700 bg-indigo-700 text-white hover:text-white hover:bg-indigo-800 hover:border-blue-800 focus:ring focus:ring-blue-500 focus:ring-opacity-50 active:bg-blue-700 active:border-blue-700" target="_blank">
                 <span>Live url</span>
             </a>
+           
             <a :href="project.url" class="mt-2 inline-flex justify-end items-center space-x-2 text-sm font-semibold focus:outline-none px-3 py-2 leading-6 text-gray-800" target="_blank">
               <span>More Details</span>
           </a>

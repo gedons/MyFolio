@@ -109,7 +109,7 @@
           Projects
         </h2>
       </div>
-    <pre>{{projects}}</pre>
+    
       <!-- PORTFOLIO -->
       <div v-if="loading"  class="flex justify-center">
         <svg  class="animate-spin text-center  h-8 w-8 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

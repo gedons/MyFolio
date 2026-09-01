@@ -22,11 +22,11 @@
       @mouseleave="handleNodeHover(node.id, false)"
     >
       <div
-        class="px-3 py-1.5 sm:px-4 sm:py-1.5 rounded-full border backdrop-blur-md transition-all duration-300 flex items-center space-x-2 shadow-2xl"
-        :class="hoveredNodeId === node.id || activeNodeId === node.id ? 'bg-sky-500/20 border-sky-400 text-white scale-110 shadow-sky-500/40' : 'bg-[#0b1326]/85 border-slate-700/80 text-slate-300 hover:border-slate-500'"
+        class="px-2.5 py-1 sm:px-4 sm:py-1.5 rounded-full border backdrop-blur-md transition-all duration-300 flex items-center space-x-1.5 sm:space-x-2 shadow-2xl"
+        :class="hoveredNodeId === node.id || activeNodeId === node.id ? 'bg-sky-500/20 border-sky-400 text-white scale-110 shadow-sky-500/40' : 'bg-[#0b1326]/90 border-slate-700/80 text-slate-300 hover:border-slate-500'"
       >
         <span class="w-1.5 h-1.5 rounded-full" :class="hoveredNodeId === node.id ? 'bg-sky-400 animate-ping' : 'bg-sky-500'"></span>
-        <span class="font-mono font-semibold text-[10px] sm:text-xs uppercase tracking-widest">{{ node.label }}</span>
+        <span class="font-mono font-semibold text-[9px] sm:text-xs uppercase tracking-widest whitespace-nowrap">{{ node.label }}</span>
       </div>
     </div>
 
@@ -117,12 +117,31 @@ const navButtons = [
   { id: 'contact', label: 'Contact' }
 ]
 
-const isMobileDevice = () => {
-  return window.innerWidth < 768 || ('ontouchstart' in window) || navigator.maxTouchPoints > 0
+const isMobileScreen = () => {
+  return window.innerWidth < 768
 }
 
 const getDefaultRadius = () => {
-  return isMobileDevice() ? 15.5 : 11
+  return isMobileScreen() ? 16.0 : 11.0
+}
+
+const getNodePositions = (isMobile) => {
+  if (isMobile) {
+    return {
+      identity: new THREE.Vector3(0, 0.15, 0),
+      work: new THREE.Vector3(-2.2, 0.45, -0.6),    // Centered inward so it never cuts on narrow mobile screens
+      about: new THREE.Vector3(2.2, 0.35, -0.5),    // Centered inward so it never cuts on narrow mobile screens
+      contact: new THREE.Vector3(0, -3.1, 2.0),
+      stack: new THREE.Vector3(0, 3.3, -2.0)
+    }
+  }
+  return {
+    identity: new THREE.Vector3(0, 0.4, 0),
+    work: new THREE.Vector3(-4.4, 0.8, -1.5),
+    about: new THREE.Vector3(4.4, 0.6, -1.2),
+    contact: new THREE.Vector3(0, -2.5, 2.8),
+    stack: new THREE.Vector3(0, 3.2, -2.5)
+  }
 }
 
 // Projected Nodes for HTML Labels
@@ -152,14 +171,32 @@ let currentLookAt = new THREE.Vector3(0, 0, 0)
 let starsMesh, constellationMesh
 
 const getCameraWaypoints = () => {
-  const isMobile = isMobileDevice()
+  const isMobile = isMobileScreen()
+  const positions = getNodePositions(isMobile)
   return {
-    identity: { radius: isMobile ? 15.5 : 11, theta: 0, phi: Math.PI / 2.2, lookAt: new THREE.Vector3(0, 0, 0) },
-    work: { radius: isMobile ? 10.5 : 7.5, theta: -Math.PI / 3.5, phi: Math.PI / 2.4, lookAt: new THREE.Vector3(-4.4, 0.8, -1.5) },
-    about: { radius: isMobile ? 10.5 : 7.5, theta: Math.PI / 3.5, phi: Math.PI / 2.4, lookAt: new THREE.Vector3(4.4, 0.6, -1.2) },
-    contact: { radius: isMobile ? 9.5 : 7.0, theta: 0, phi: Math.PI / 1.7, lookAt: new THREE.Vector3(0, -2.5, 2.8) },
-    stack: { radius: isMobile ? 10.5 : 7.5, theta: 0, phi: Math.PI / 3.2, lookAt: new THREE.Vector3(0, 3.2, -2.5) }
+    identity: { radius: isMobile ? 16.0 : 11.0, theta: 0, phi: Math.PI / 2.2, lookAt: new THREE.Vector3(0, 0, 0) },
+    work: { radius: isMobile ? 10.0 : 7.5, theta: isMobile ? -Math.PI / 4 : -Math.PI / 3.5, phi: Math.PI / 2.4, lookAt: positions.work },
+    about: { radius: isMobile ? 10.0 : 7.5, theta: isMobile ? Math.PI / 4 : Math.PI / 3.5, phi: Math.PI / 2.4, lookAt: positions.about },
+    contact: { radius: isMobile ? 9.5 : 7.0, theta: 0, phi: Math.PI / 1.7, lookAt: positions.contact },
+    stack: { radius: isMobile ? 10.5 : 7.5, theta: 0, phi: Math.PI / 3.2, lookAt: positions.stack }
   }
+}
+
+const syncNodePositions = (isMobile) => {
+  const positions = getNodePositions(isMobile)
+  
+  // Update 3D Groups
+  if (animatedElements.workGroup) animatedElements.workGroup.position.copy(positions.work)
+  if (animatedElements.aboutGroup) animatedElements.aboutGroup.position.copy(positions.about)
+  if (animatedElements.contactGroup) animatedElements.contactGroup.position.copy(positions.contact)
+  if (animatedElements.stackGroup) animatedElements.stackGroup.position.copy(positions.stack)
+
+  // Update HTML Label Projection Vectors
+  nodes.forEach(n => {
+    if (positions[n.id]) {
+      n.position.copy(positions[n.id])
+    }
+  })
 }
 
 const initThree = () => {
@@ -168,11 +205,12 @@ const initThree = () => {
 
   const width = container.clientWidth || window.innerWidth
   const height = container.clientHeight || window.innerHeight
+  const isMobile = isMobileScreen()
 
   scene = new THREE.Scene()
   scene.fog = new THREE.FogExp2(0x040914, 0.032)
 
-  const fov = width < 768 ? 58 : 50
+  const fov = isMobile ? 60 : 50
   camera = new THREE.PerspectiveCamera(fov, width / height, 0.1, 100)
   updateCameraPosition()
 
@@ -197,13 +235,12 @@ const initThree = () => {
   rimLight.position.set(0, 0, 0)
   scene.add(rimLight)
 
-  buildObjects()
+  buildObjects(isMobile)
   buildAtmosphere()
 
   raycaster = new THREE.Raycaster()
   pointer = new THREE.Vector2(-1000, -1000)
 
-  // Local element listeners rather than leaky window listeners
   window.addEventListener('resize', onWindowResize, { passive: true })
   container.addEventListener('pointerdown', onPointerDown)
   container.addEventListener('pointermove', onPointerMove, { passive: true })
@@ -217,7 +254,9 @@ const initThree = () => {
   animate()
 }
 
-const buildObjects = () => {
+const buildObjects = (isMobile) => {
+  const positions = getNodePositions(isMobile)
+
   // 1. Centerpiece / Identity
   const centerGroup = new THREE.Group()
   
@@ -259,7 +298,7 @@ const buildObjects = () => {
 
   // 2. Selected Work
   const workGroup = new THREE.Group()
-  workGroup.position.set(-4.4, 0.8, -1.5)
+  workGroup.position.copy(positions.work)
 
   const cubeMesh = new THREE.Mesh(
     new THREE.BoxGeometry(0.8, 0.8, 0.8),
@@ -293,7 +332,7 @@ const buildObjects = () => {
 
   // 3. About Me
   const aboutGroup = new THREE.Group()
-  aboutGroup.position.set(4.4, 0.6, -1.2)
+  aboutGroup.position.copy(positions.about)
 
   const aboutShell = new THREE.Mesh(
     new THREE.IcosahedronGeometry(1.2, 0),
@@ -328,7 +367,7 @@ const buildObjects = () => {
 
   // 4. Tech Stack
   const stackGroup = new THREE.Group()
-  stackGroup.position.set(0, 3.2, -2.5)
+  stackGroup.position.copy(positions.stack)
 
   const knotGeom = new THREE.TorusKnotGeometry(0.9, 0.2, 48, 8)
   const knotMat = new THREE.MeshStandardMaterial({
@@ -369,7 +408,7 @@ const buildObjects = () => {
 
   // 5. Get In Touch
   const contactGroup = new THREE.Group()
-  contactGroup.position.set(0, -2.5, 2.8)
+  contactGroup.position.copy(positions.contact)
 
   const contactMesh = new THREE.Mesh(
     new THREE.SphereGeometry(1.0, 14, 14),
@@ -400,6 +439,8 @@ const buildObjects = () => {
 
   scene.add(contactGroup)
   animatedElements.contactGroup = contactGroup
+
+  syncNodePositions(isMobile)
 }
 
 const buildAtmosphere = () => {
@@ -497,12 +538,12 @@ const updateProjectedLabels = () => {
 
     const isBehind = pos.z > 1
     node.visible = !isBehind
-    const margin = 35
+    const margin = Math.min(24, width * 0.06)
     const rawX = (pos.x * 0.5 + 0.5) * width
     const rawY = (-(pos.y * 0.5) + 0.5) * height
 
-    node.screenX = Math.max(margin, Math.min(width - margin, rawX))
-    node.screenY = Math.max(margin + 20, Math.min(height - margin - 40, rawY))
+    node.screenX = Math.max(margin + 45, Math.min(width - margin - 45, rawX))
+    node.screenY = Math.max(margin + 30, Math.min(height - margin - 50, rawY))
   })
 }
 
@@ -512,12 +553,15 @@ const onWindowResize = () => {
   if (!canvasContainer.value || !renderer || !camera) return
   const width = canvasContainer.value.clientWidth || window.innerWidth
   const height = canvasContainer.value.clientHeight || window.innerHeight
+  const isMobile = isMobileScreen()
 
-  camera.fov = width < 768 ? 58 : 50
+  camera.fov = isMobile ? 60 : 50
   camera.aspect = width / height
   camera.updateProjectionMatrix()
   renderer.setSize(width, height)
   containerDimensions = { width, height }
+
+  syncNodePositions(isMobile)
 
   if (!activeNodeId.value || activeNodeId.value === 'identity') {
     targetSpherical.radius = getDefaultRadius()
@@ -582,7 +626,6 @@ const onPointerUp = (e) => {
   const dragDistance = Math.hypot(e.clientX - dragStartPos.x, e.clientY - dragStartPos.y)
   isDragging = false
 
-  // Only trigger click if the user didn't drag to orbit
   if (dragDistance < 6) {
     raycastClick()
   }

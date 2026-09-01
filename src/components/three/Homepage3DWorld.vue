@@ -14,10 +14,10 @@
       :style="{
         left: `${node.screenX}px`,
         top: `${node.screenY}px`,
-        opacity: node.visible ? 1 : 0,
-        pointerEvents: node.visible ? 'auto' : 'none'
+        opacity: (node.visible && !isOverlayOpen) ? 1 : 0,
+        pointerEvents: (node.visible && !isOverlayOpen) ? 'auto' : 'none'
       }"
-      @click="handleNodeClick(node.id)"
+      @click.stop="handleNodeClick(node.id)"
       @mouseenter="handleNodeHover(node.id, true)"
       @mouseleave="handleNodeHover(node.id, false)"
     >
@@ -47,7 +47,7 @@
         <button
           v-for="btn in navButtons"
           :key="btn.id"
-          @click="handleNodeClick(btn.id)"
+          @click.stop="handleNodeClick(btn.id)"
           class="px-4 py-1.5 rounded-full text-xs font-semibold font-mono uppercase tracking-wider transition-all"
           :class="activeNodeId === btn.id ? 'bg-sky-500 text-black shadow-md' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'"
         >
@@ -57,7 +57,7 @@
 
       <!-- Reset View Affordance -->
       <button
-        @click="resetCamera"
+        @click.stop="resetCamera"
         class="pointer-events-auto px-3.5 py-1.5 rounded-full text-xs font-mono font-medium bg-[#0b1326]/80 hover:bg-slate-800 backdrop-blur-md border border-slate-800 text-slate-300 hover:text-white transition-all flex items-center space-x-1.5"
         title="Reset 3D Camera"
       >
@@ -73,7 +73,7 @@
       <button
         v-for="btn in navButtons"
         :key="btn.id"
-        @click="handleNodeClick(btn.id)"
+        @click.stop="handleNodeClick(btn.id)"
         class="flex flex-col items-center justify-center py-1 px-2.5 rounded-xl transition-all"
         :class="activeNodeId === btn.id ? 'text-sky-400 font-bold bg-sky-500/10' : 'text-slate-400 font-medium'"
       >
@@ -142,6 +142,8 @@ let raycaster, pointer
 let isDragging = false
 let pointerDirty = false
 let isPaused = false
+let justClosedGuard = false
+let dragStartPos = { x: 0, y: 0 }
 let previousTouchPosition = { x: 0, y: 0 }
 let sphericalCoordinates = { radius: getDefaultRadius(), theta: 0, phi: Math.PI / 2.2 }
 let targetSpherical = { radius: getDefaultRadius(), theta: 0, phi: Math.PI / 2.2 }
@@ -167,23 +169,19 @@ const initThree = () => {
   const width = container.clientWidth || window.innerWidth
   const height = container.clientHeight || window.innerHeight
 
-  // 1. Scene & Deep Atmosphere Fog
   scene = new THREE.Scene()
   scene.fog = new THREE.FogExp2(0x040914, 0.032)
 
-  // 2. Camera
   const fov = width < 768 ? 58 : 50
   camera = new THREE.PerspectiveCamera(fov, width / height, 0.1, 100)
   updateCameraPosition()
 
-  // 3. WebGL Renderer
   renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' })
   renderer.setSize(width, height)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
   renderer.setClearColor(0x040914, 1)
   container.appendChild(renderer.domElement)
 
-  // 4. Balanced Atmospheric Lighting Rig
   const ambientLight = new THREE.AmbientLight(0xdbeafe, 0.6)
   scene.add(ambientLight)
 
@@ -199,36 +197,30 @@ const initThree = () => {
   rimLight.position.set(0, 0, 0)
   scene.add(rimLight)
 
-  // 5. Build Spec-Accurate Objects
   buildObjects()
-
-  // 6. Atmospheric Background (Parallax Stars, Constellation Lines, Faint Nebula Glow)
   buildAtmosphere()
 
-  // 7. Raycaster
   raycaster = new THREE.Raycaster()
   pointer = new THREE.Vector2(-1000, -1000)
 
-  // 8. Event Listeners
+  // Local element listeners rather than leaky window listeners
   window.addEventListener('resize', onWindowResize, { passive: true })
   container.addEventListener('pointerdown', onPointerDown)
-  window.addEventListener('pointermove', onPointerMove, { passive: true })
-  window.addEventListener('pointerup', onPointerUp)
+  container.addEventListener('pointermove', onPointerMove, { passive: true })
+  container.addEventListener('pointerup', onPointerUp)
   container.addEventListener('wheel', onWheel, { passive: true })
   container.addEventListener('touchstart', onTouchStart, { passive: true })
-  window.addEventListener('touchmove', onTouchMove, { passive: true })
-  window.addEventListener('touchend', onTouchEnd)
+  container.addEventListener('touchmove', onTouchMove, { passive: true })
+  container.addEventListener('touchend', onTouchEnd)
   document.addEventListener('visibilitychange', onVisibilityChange)
 
-  // 9. Start Render Loop
   animate()
 }
 
 const buildObjects = () => {
-  // 1. Centerpiece / Identity: Pulsing Diamond Core inside Wireframe Sphere + Orbit Ring
+  // 1. Centerpiece / Identity
   const centerGroup = new THREE.Group()
   
-  // Wireframe sphere outer shell
   const sphereGeom = new THREE.SphereGeometry(1.6, 16, 16)
   const sphereMat = new THREE.MeshStandardMaterial({
     color: 0x0ea5e9,
@@ -243,7 +235,6 @@ const buildObjects = () => {
   centerGroup.add(centerSphere)
   interactiveMeshes.push(centerSphere)
 
-  // Diamond Core (pulsing live heart)
   const diamondGeom = new THREE.OctahedronGeometry(0.85, 0)
   const diamondMat = new THREE.MeshStandardMaterial({
     color: 0x38bdf8,
@@ -256,7 +247,6 @@ const buildObjects = () => {
   centerGroup.add(diamondMesh)
   animatedElements.identityDiamond = diamondMesh
 
-  // Orbit ring
   const orbitRingGeom = new THREE.TorusGeometry(2.4, 0.025, 8, 48)
   const orbitRingMat = new THREE.MeshStandardMaterial({ color: 0x0ea5e9, emissive: 0x0ea5e9, emissiveIntensity: 0.35 })
   const orbitRing = new THREE.Mesh(orbitRingGeom, orbitRingMat)
@@ -267,11 +257,10 @@ const buildObjects = () => {
   scene.add(centerGroup)
   animatedElements.centerGroup = centerGroup
 
-  // 2. Selected Work: Cluster of Distinct Low-Poly Shapes ("Collection of distinct built things")
+  // 2. Selected Work
   const workGroup = new THREE.Group()
   workGroup.position.set(-4.4, 0.8, -1.5)
 
-  // Shape A: Cube
   const cubeMesh = new THREE.Mesh(
     new THREE.BoxGeometry(0.8, 0.8, 0.8),
     new THREE.MeshStandardMaterial({ color: 0x0ea5e9, wireframe: true, metalness: 0.8, roughness: 0.2, emissive: 0x0284c7, emissiveIntensity: 0.3 })
@@ -281,7 +270,6 @@ const buildObjects = () => {
   workGroup.add(cubeMesh)
   interactiveMeshes.push(cubeMesh)
 
-  // Shape B: Tetrahedron
   const tetraMesh = new THREE.Mesh(
     new THREE.TetrahedronGeometry(0.7, 0),
     new THREE.MeshStandardMaterial({ color: 0x38bdf8, wireframe: false, metalness: 0.9, roughness: 0.1, emissive: 0x0369a1, emissiveIntensity: 0.5 })
@@ -291,7 +279,6 @@ const buildObjects = () => {
   workGroup.add(tetraMesh)
   interactiveMeshes.push(tetraMesh)
 
-  // Shape C: Prism / Hexagonal cylinder
   const prismMesh = new THREE.Mesh(
     new THREE.CylinderGeometry(0.4, 0.4, 0.9, 6),
     new THREE.MeshStandardMaterial({ color: 0x0284c7, wireframe: true, emissive: 0x0ea5e9, emissiveIntensity: 0.3 })
@@ -304,11 +291,10 @@ const buildObjects = () => {
   scene.add(workGroup)
   animatedElements.workGroup = workGroup
 
-  // 3. About Me: Outer Wireframe Shell with Solid Faceted Core ("Public shell vs Person underneath")
+  // 3. About Me
   const aboutGroup = new THREE.Group()
   aboutGroup.position.set(4.4, 0.6, -1.2)
 
-  // Outer wireframe shell
   const aboutShell = new THREE.Mesh(
     new THREE.IcosahedronGeometry(1.2, 0),
     new THREE.MeshStandardMaterial({
@@ -324,7 +310,6 @@ const buildObjects = () => {
   aboutGroup.add(aboutShell)
   interactiveMeshes.push(aboutShell)
 
-  // Solid Faceted Inner Core
   const aboutCore = new THREE.Mesh(
     new THREE.OctahedronGeometry(0.65, 0),
     new THREE.MeshStandardMaterial({
@@ -341,7 +326,7 @@ const buildObjects = () => {
   scene.add(aboutGroup)
   animatedElements.aboutGroup = aboutGroup
 
-  // 4. Tech Stack: Torus Knot with Glowing Tech Nodes ("Interconnected Technologies")
+  // 4. Tech Stack
   const stackGroup = new THREE.Group()
   stackGroup.position.set(0, 3.2, -2.5)
 
@@ -359,7 +344,6 @@ const buildObjects = () => {
   stackGroup.add(knotMesh)
   interactiveMeshes.push(knotMesh)
 
-  // Place 5 glowing nodes along the knot path
   const techNodesGroup = new THREE.Group()
   const nodeCount = 6
   for (let i = 0; i < nodeCount; i++) {
@@ -383,7 +367,7 @@ const buildObjects = () => {
   scene.add(stackGroup)
   animatedElements.stackGroup = stackGroup
 
-  // 5. Get in Touch: Wireframe Sphere with Expanding/Pulsing Signal Ring ("Broadcasting a Signal")
+  // 5. Get In Touch
   const contactGroup = new THREE.Group()
   contactGroup.position.set(0, -2.5, 2.8)
 
@@ -402,7 +386,6 @@ const buildObjects = () => {
   contactGroup.add(contactMesh)
   interactiveMeshes.push(contactMesh)
 
-  // Emitting pulse ring
   const signalRingGeom = new THREE.RingGeometry(1.1, 1.15, 32)
   const signalRingMat = new THREE.MeshBasicMaterial({
     color: 0x38bdf8,
@@ -420,7 +403,6 @@ const buildObjects = () => {
 }
 
 const buildAtmosphere = () => {
-  // 1. Depth-Varied Parallax Stars
   const starCount = 450
   const positions = new Float32Array(starCount * 3)
   const colors = new Float32Array(starCount * 3)
@@ -457,7 +439,6 @@ const buildAtmosphere = () => {
   starsMesh = new THREE.Points(starGeom, starMat)
   scene.add(starsMesh)
 
-  // 2. Faint Distant Constellation Lines
   const linePositions = []
   for (let i = 0; i < 20; i++) {
     const idx1 = Math.floor(Math.random() * starCount) * 3
@@ -474,7 +455,6 @@ const buildAtmosphere = () => {
   scene.add(linesMesh)
   constellationMesh = linesMesh
 
-  // 3. Faint Distant Background Nebula Glow
   const glowGeom = new THREE.PlaneGeometry(35, 35)
   const canvas = document.createElement('canvas')
   canvas.width = 128
@@ -552,6 +532,10 @@ watch(() => props.isOverlayOpen, (open) => {
   if (!open) {
     isPaused = false
     pointerDirty = true
+    justClosedGuard = true
+    setTimeout(() => {
+      justClosedGuard = false
+    }, 400)
     resetCamera()
   } else {
     setTimeout(() => {
@@ -564,11 +548,14 @@ watch(() => props.isOverlayOpen, (open) => {
 
 // Desktop Pointer Controls
 const onPointerDown = (e) => {
+  if (props.isOverlayOpen || justClosedGuard) return
   isDragging = true
+  dragStartPos = { x: e.clientX, y: e.clientY }
   previousTouchPosition = { x: e.clientX, y: e.clientY }
 }
 
 const onPointerMove = (e) => {
+  if (props.isOverlayOpen || justClosedGuard) return
   if (!canvasContainer.value) return
   const rect = canvasContainer.value.getBoundingClientRect()
   pointer.x = ((e.clientX - rect.left) / rect.width) * 2 - 1
@@ -586,17 +573,27 @@ const onPointerMove = (e) => {
   }
 }
 
-const onPointerUp = () => {
-  if (isDragging) {
+const onPointerUp = (e) => {
+  if (props.isOverlayOpen || justClosedGuard) {
     isDragging = false
+    return
   }
-  raycastClick()
+
+  const dragDistance = Math.hypot(e.clientX - dragStartPos.x, e.clientY - dragStartPos.y)
+  isDragging = false
+
+  // Only trigger click if the user didn't drag to orbit
+  if (dragDistance < 6) {
+    raycastClick()
+  }
 }
 
 // Mobile Touch Controls
 const onTouchStart = (e) => {
+  if (props.isOverlayOpen || justClosedGuard) return
   if (e.touches.length === 1) {
     isDragging = true
+    dragStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY }
     previousTouchPosition = { x: e.touches[0].clientX, y: e.touches[0].clientY }
     
     if (canvasContainer.value) {
@@ -609,6 +606,7 @@ const onTouchStart = (e) => {
 }
 
 const onTouchMove = (e) => {
+  if (props.isOverlayOpen || justClosedGuard) return
   if (isDragging && e.touches.length === 1) {
     const deltaX = e.touches[0].clientX - previousTouchPosition.x
     const deltaY = e.touches[0].clientY - previousTouchPosition.y
@@ -620,18 +618,31 @@ const onTouchMove = (e) => {
   }
 }
 
-const onTouchEnd = () => {
-  if (isDragging) {
+const onTouchEnd = (e) => {
+  if (props.isOverlayOpen || justClosedGuard) {
+    isDragging = false
+    return
+  }
+
+  const touch = e.changedTouches[0]
+  if (touch) {
+    const dragDistance = Math.hypot(touch.clientX - dragStartPos.x, touch.clientY - dragStartPos.y)
+    isDragging = false
+    if (dragDistance < 8) {
+      raycastClick()
+    }
+  } else {
     isDragging = false
   }
-  raycastClick()
 }
 
 const onWheel = (e) => {
+  if (props.isOverlayOpen) return
   targetSpherical.radius = Math.max(5, Math.min(22, targetSpherical.radius + e.deltaY * 0.01))
 }
 
 const raycastClick = () => {
+  if (props.isOverlayOpen || justClosedGuard) return
   if (!raycaster || !camera) return
   raycaster.setFromCamera(pointer, camera)
   const intersects = raycaster.intersectObjects(interactiveMeshes, false)
@@ -646,6 +657,7 @@ const raycastClick = () => {
 }
 
 const handleNodeClick = (id) => {
+  if (justClosedGuard) return
   activeNodeId.value = id
   const waypoints = getCameraWaypoints()
   const waypoint = waypoints[id] || waypoints.identity
@@ -670,6 +682,7 @@ const handleNodeClick = (id) => {
 }
 
 const handleNodeHover = (id, isHovered) => {
+  if (props.isOverlayOpen || justClosedGuard) return
   hoveredNodeId.value = isHovered ? id : null
   const mesh = interactiveMeshes.find(m => m.userData.id === id)
   if (mesh) {
@@ -686,7 +699,6 @@ const resetCamera = () => {
   handleNodeClick('identity')
 }
 
-// Animation Loop with Living Behavior
 let clock = new THREE.Clock()
 
 const animate = () => {
@@ -696,7 +708,7 @@ const animate = () => {
 
   const elapsed = clock.getElapsedTime()
 
-  if (pointerDirty && raycaster && camera) {
+  if (pointerDirty && raycaster && camera && !props.isOverlayOpen && !justClosedGuard) {
     raycaster.setFromCamera(pointer, camera)
     const intersects = raycaster.intersectObjects(interactiveMeshes, false)
     if (intersects.length > 0) {
@@ -710,7 +722,6 @@ const animate = () => {
     pointerDirty = false
   }
 
-  // Smooth camera position interpolation
   sphericalCoordinates.radius += (targetSpherical.radius - sphericalCoordinates.radius) * 0.08
   sphericalCoordinates.theta += (targetSpherical.theta - sphericalCoordinates.theta) * 0.08
   sphericalCoordinates.phi += (targetSpherical.phi - sphericalCoordinates.phi) * 0.08
@@ -722,7 +733,7 @@ const animate = () => {
   camera.position.set(x, y, z)
   camera.lookAt(currentLookAt)
 
-  // 1. Identity Alive Heart Pulse
+  // 1. Identity Pulse
   if (animatedElements.identityDiamond) {
     const pulse = 1 + Math.sin(elapsed * 2.2) * 0.08
     animatedElements.identityDiamond.scale.set(pulse, pulse, pulse)
@@ -738,7 +749,7 @@ const animate = () => {
     animatedElements.identityRing.rotation.z += 0.01
   }
 
-  // 2. Selected Work Cluster Rotation
+  // 2. Selected Work Rotation
   if (animatedElements.workGroup) {
     animatedElements.workGroup.rotation.y += 0.008
     animatedElements.workGroup.rotation.x = Math.sin(elapsed * 0.8) * 0.15
@@ -753,13 +764,13 @@ const animate = () => {
     }
   }
 
-  // 4. Tech Stack Knot Rotation & Orbit
+  // 4. Tech Stack Knot Rotation
   if (animatedElements.stackGroup) {
     animatedElements.stackGroup.rotation.y += 0.007
     animatedElements.stackGroup.rotation.x += 0.004
   }
 
-  // 5. Contact Signal Pulse (Expanding Radio Waves)
+  // 5. Contact Signal Pulse
   if (animatedElements.contactSignalRing) {
     const pulseCycle = (elapsed * 1.2) % 2
     const ringScale = 1 + pulseCycle * 0.8
@@ -771,7 +782,7 @@ const animate = () => {
     animatedElements.contactGroup.rotation.y += 0.005
   }
 
-  // 6. Background Slow Drift
+  // 6. Background Drift
   if (starsMesh) {
     starsMesh.rotation.y -= 0.0003
   }
@@ -795,10 +806,6 @@ onMounted(() => {
 onBeforeUnmount(() => {
   cancelAnimationFrame(animationFrameId)
   window.removeEventListener('resize', onWindowResize)
-  window.removeEventListener('pointermove', onPointerMove)
-  window.removeEventListener('pointerup', onPointerUp)
-  window.removeEventListener('touchmove', onTouchMove)
-  window.removeEventListener('touchend', onTouchEnd)
   document.removeEventListener('visibilitychange', onVisibilityChange)
 
   if (scene) {

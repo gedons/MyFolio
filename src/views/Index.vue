@@ -11,7 +11,7 @@
     <Transition name="slide-up">
       <div
         v-if="activeOverlay === 'work'"
-        @click.self="closeOverlay"
+        @click.self.stop="closeOverlay"
         class="fixed inset-0 z-40 bg-background/85 backdrop-blur-xl flex flex-col justify-end sm:justify-center p-0 sm:p-6 overflow-y-auto"
       >
         <div class="bg-surface border border-surface2 rounded-t-3xl sm:rounded-3xl max-w-5xl w-full mx-auto p-5 sm:p-10 relative max-h-[92vh] sm:max-h-[85vh] overflow-y-auto shadow-2xl">
@@ -24,7 +24,8 @@
               <p class="text-xs sm:text-sm text-text-muted mt-0.5">Explore real production applications & case studies.</p>
             </div>
             <button
-              @click="closeOverlay"
+              @click.stop="closeOverlay"
+              @pointerup.stop
               class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-surface2 hover:bg-slate-700 flex items-center justify-center text-text-muted hover:text-white transition-colors text-lg"
               title="Close (Esc)"
             >
@@ -41,7 +42,7 @@
     <Transition name="slide-up">
       <div
         v-if="activeOverlay === 'about'"
-        @click.self="closeOverlay"
+        @click.self.stop="closeOverlay"
         class="fixed inset-0 z-40 bg-background/85 backdrop-blur-xl flex flex-col justify-end sm:justify-center p-0 sm:p-6 overflow-y-auto"
       >
         <div class="bg-surface border border-surface2 rounded-t-3xl sm:rounded-3xl max-w-4xl w-full mx-auto p-5 sm:p-10 relative max-h-[92vh] sm:max-h-[85vh] overflow-y-auto shadow-2xl">
@@ -51,7 +52,8 @@
           <div class="flex items-center justify-between mb-6 pb-4 border-b border-surface2">
             <h2 class="text-2xl sm:text-4xl font-display font-bold text-white">About Gedoni Ani</h2>
             <button
-              @click="closeOverlay"
+              @click.stop="closeOverlay"
+              @pointerup.stop
               class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-surface2 hover:bg-slate-700 flex items-center justify-center text-text-muted hover:text-white transition-colors text-lg"
               title="Close (Esc)"
             >
@@ -68,7 +70,7 @@
     <Transition name="slide-up">
       <div
         v-if="activeOverlay === 'stack'"
-        @click.self="closeOverlay"
+        @click.self.stop="closeOverlay"
         class="fixed inset-0 z-40 bg-background/85 backdrop-blur-xl flex flex-col justify-end sm:justify-center p-0 sm:p-6 overflow-y-auto"
       >
         <div class="bg-surface border border-surface2 rounded-t-3xl sm:rounded-3xl max-w-4xl w-full mx-auto p-5 sm:p-10 relative max-h-[92vh] sm:max-h-[85vh] overflow-y-auto shadow-2xl">
@@ -78,7 +80,8 @@
           <div class="flex items-center justify-between mb-6 pb-4 border-b border-surface2">
             <h2 class="text-2xl sm:text-4xl font-display font-bold text-white">Tech Stack & Tools</h2>
             <button
-              @click="closeOverlay"
+              @click.stop="closeOverlay"
+              @pointerup.stop
               class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-surface2 hover:bg-slate-700 flex items-center justify-center text-text-muted hover:text-white transition-colors text-lg"
               title="Close (Esc)"
             >
@@ -95,7 +98,7 @@
     <Transition name="slide-up">
       <div
         v-if="activeOverlay === 'contact'"
-        @click.self="closeOverlay"
+        @click.self.stop="closeOverlay"
         class="fixed inset-0 z-40 bg-background/85 backdrop-blur-xl flex flex-col justify-end sm:justify-center p-0 sm:p-6 overflow-y-auto"
       >
         <div class="bg-surface border border-surface2 rounded-t-3xl sm:rounded-3xl max-w-3xl w-full mx-auto p-5 sm:p-10 relative max-h-[92vh] sm:max-h-[85vh] overflow-y-auto shadow-2xl">
@@ -108,7 +111,8 @@
               <p class="text-xs text-text-muted mt-0.5">Available for full-time & contract roles.</p>
             </div>
             <button
-              @click="closeOverlay"
+              @click.stop="closeOverlay"
+              @pointerup.stop
               class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-surface2 hover:bg-slate-700 flex items-center justify-center text-text-muted hover:text-white transition-colors text-lg"
               title="Close (Esc)"
             >
@@ -125,7 +129,7 @@
     <Transition name="fade">
       <div
         v-if="selectedProject"
-        @click.self="selectedProject = null"
+        @click.self.stop="selectedProject = null"
         class="fixed inset-0 z-50 bg-background/90 backdrop-blur-2xl flex items-end sm:items-center justify-center p-0 sm:p-6 overflow-y-auto"
       >
         <div class="bg-surface border border-surface2 rounded-t-3xl sm:rounded-3xl max-w-4xl w-full p-5 sm:p-10 relative max-h-[92vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl">
@@ -133,7 +137,8 @@
           <div class="w-12 h-1.5 bg-slate-700 rounded-full mx-auto mb-4 sm:hidden"></div>
 
           <button
-            @click="selectedProject = null"
+            @click.stop="selectedProject = null"
+            @pointerup.stop
             class="absolute top-5 right-5 sm:top-6 sm:right-6 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-surface2 hover:bg-slate-700 flex items-center justify-center text-text-muted hover:text-white text-lg transition-colors"
             title="Close (Esc)"
           >

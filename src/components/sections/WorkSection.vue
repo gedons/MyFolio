@@ -1,29 +1,29 @@
 <template>
-  <section id="work" class="py-24 px-6 max-w-7xl mx-auto">
-    <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+  <section id="work" class="py-12 sm:py-20 px-4 sm:px-6 max-w-7xl mx-auto">
+    <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-12 gap-4">
       <div>
-        <h2 class="text-4xl md:text-5xl font-display font-bold text-text-main">
+        <h2 class="text-3xl sm:text-5xl font-display font-bold text-text-main">
           Selected Work
         </h2>
-        <p class="text-text-muted mt-2 text-base font-body">
+        <p class="text-text-muted mt-2 text-sm sm:text-base font-body">
           A showcase of recent digital platforms, Web3 apps, and full-stack solutions.
         </p>
       </div>
 
-      <div class="mt-4 md:mt-0 flex items-center gap-2">
+      <div class="flex items-center gap-2" v-if="hasNonFeaturedProjects">
         <button
           @click="showOnlyFeatured = !showOnlyFeatured"
-          class="px-4 py-2 rounded-full text-xs font-semibold border transition-all"
-          :class="showOnlyFeatured ? 'bg-accent text-background border-accent' : 'bg-surface text-text-muted border-surface2 hover:text-white'"
+          class="px-4 py-2 rounded-full text-xs font-semibold border transition-all font-mono"
+          :class="showOnlyFeatured ? 'bg-accent text-background border-accent shadow-md shadow-accent/20' : 'bg-surface text-text-muted border-surface2 hover:text-white'"
         >
-          {{ showOnlyFeatured ? '★ Showing Featured' : 'All Projects' }}
+          {{ showOnlyFeatured ? '★ Featured Work' : 'Show All (Archive)' }}
         </button>
       </div>
     </div>
     
     <!-- Loading Skeletons -->
-    <div v-if="projectsStore.loading" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-      <div v-for="n in 4" :key="n" class="animate-pulse bg-surface h-96 rounded-2xl border border-surface2"></div>
+    <div v-if="projectsStore.loading" class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
+      <div v-for="n in 4" :key="n" class="animate-pulse bg-surface h-80 sm:h-96 rounded-2xl border border-surface2"></div>
     </div>
 
     <!-- Error State -->
@@ -37,11 +37,18 @@
 
     <!-- Empty State -->
     <div v-else-if="displayedProjects.length === 0" class="p-12 text-center text-text-muted bg-surface rounded-2xl border border-surface2">
-      No projects found.
+      <p class="font-display text-lg text-slate-300">No active featured projects right now.</p>
+      <button
+        v-if="hasNonFeaturedProjects && showOnlyFeatured"
+        @click="showOnlyFeatured = false"
+        class="mt-3 text-xs text-accent hover:underline"
+      >
+        View all archived projects &rarr;
+      </button>
     </div>
 
     <!-- Projects Grid -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
       <div
         v-for="project in displayedProjects"
         :key="project._id"
@@ -49,7 +56,7 @@
         @click="$emit('open-project', project)"
       >
         <!-- Cover Media Preview -->
-        <div class="h-64 bg-surface2 relative overflow-hidden">
+        <div class="h-56 sm:h-64 bg-surface2 relative overflow-hidden">
           <img
             v-if="project.coverImage || project.imageUrl"
             :src="project.coverImage || project.imageUrl"
@@ -61,18 +68,18 @@
           </div>
 
           <!-- Featured Tag Overlay -->
-          <div v-if="project.featured" class="absolute top-4 right-4 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-background/80 backdrop-blur-md text-accent border border-accent/30 shadow-lg">
+          <div v-if="project.featured" class="absolute top-4 right-4 px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-background/85 backdrop-blur-md text-accent border border-accent/30 shadow-lg font-mono">
             Featured
           </div>
         </div>
 
         <!-- Details -->
-        <div class="p-6 sm:p-8 flex-1 flex flex-col justify-between">
+        <div class="p-5 sm:p-8 flex-1 flex flex-col justify-between">
           <div>
-            <h3 class="text-2xl font-display font-bold text-text-main group-hover:text-accent transition-colors mb-2">
+            <h3 class="text-xl sm:text-2xl font-display font-bold text-text-main group-hover:text-accent transition-colors mb-2">
               {{ project.title }}
             </h3>
-            <p class="text-text-muted font-body text-sm leading-relaxed line-clamp-2 mb-4">
+            <p class="text-text-muted font-body text-xs sm:text-sm leading-relaxed line-clamp-2 mb-4">
               {{ project.description }}
             </p>
           </div>
@@ -87,12 +94,12 @@
               >
                 {{ tag }}
               </span>
-              <span v-if="(project.stackTags || []).length > 3" class="text-[11px] text-text-muted self-center">
-                +{{ project.stackTags.length - 3 }} more
+              <span v-if="(project.stackTags || []).length > 3" class="text-[11px] text-text-muted self-center font-mono">
+                +{{ project.stackTags.length - 3 }}
               </span>
             </div>
 
-            <span class="text-xs font-semibold text-accent group-hover:translate-x-1 transition-transform inline-flex items-center">
+            <span class="text-xs font-semibold text-accent group-hover:translate-x-1 transition-transform inline-flex items-center font-mono">
               Deep Dive &rarr;
             </span>
           </div>
@@ -107,12 +114,18 @@ import { ref, computed, onMounted } from 'vue'
 import { useProjectsStore } from '../../stores/projects'
 
 const projectsStore = useProjectsStore()
-const showOnlyFeatured = ref(false)
+
+// Default to showing only Featured projects as toggled in Admin
+const showOnlyFeatured = ref(true)
+
+const hasNonFeaturedProjects = computed(() => {
+  return projectsStore.projects.some(p => !p.featured)
+})
 
 const displayedProjects = computed(() => {
   const all = [...projectsStore.projects].sort((a, b) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0))
   if (showOnlyFeatured.value) {
-    return all.filter(p => p.featured)
+    return all.filter(p => p.featured === true)
   }
   return all
 })

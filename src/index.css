@@ -10,3 +10,65 @@
     @apply font-display tracking-tight;
   }
 }
+
+/* Custom Sleek Scrollbar (Site Dark & Sky Blue Accent Theme) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #0ea5e9 #0a0a0a;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a0a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 9999px;
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0ea5e9;
+  box-shadow: 0 0 8px rgba(14, 165, 233, 0.6);
+}
+
+/* Modal and Drawer specific scrollbars */
+.overflow-y-auto,
+.overflow-x-auto,
+.overflow-auto {
+  scrollbar-width: thin;
+  scrollbar-color: #0ea5e9 #171717;
+}
+
+.overflow-y-auto::-webkit-scrollbar,
+.overflow-x-auto::-webkit-scrollbar,
+.overflow-auto::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track,
+.overflow-x-auto::-webkit-scrollbar-track,
+.overflow-auto::-webkit-scrollbar-track {
+  background: #171717;
+  border-radius: 9999px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb,
+.overflow-x-auto::-webkit-scrollbar-thumb,
+.overflow-auto::-webkit-scrollbar-thumb {
+  background: #0ea5e9;
+  border-radius: 9999px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb:hover,
+.overflow-x-auto::-webkit-scrollbar-thumb:hover,
+.overflow-auto::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
+}

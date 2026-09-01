@@ -9,14 +9,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/dm-sans": "^5.3.0",
+    "@fontsource/outfit": "^5.3.0",
     "@headlessui/vue": "^1.7.14",
     "@heroicons/vue": "^2.0.18",
     "@tailwindcss/forms": "^0.5.3",
+    "@tresjs/cientos": "^5.8.1",
+    "@tresjs/core": "^5.8.3",
     "@vercel/analytics": "^1.0.1",
+    "@vueuse/core": "^14.4.0",
+    "@vueuse/motion": "^3.0.3",
     "axios": "^1.4.0",
+    "gsap": "^3.15.0",
     "moment": "^2.29.4",
     "nodemailer": "^6.9.3",
-    "vue": "^3.2.47",
+    "pinia": "^4.0.3",
+    "three": "^0.185.1",
+    "vue": "^3.5.42",
     "vue-router": "^4.2.2",
     "vue-scrollto": "^2.20.0",
     "vue-toast-notification": "3.0",
@@ -24,7 +33,7 @@
     "vuex": "^4.0.2"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.1.0",
+    "@vitejs/plugin-vue": "^6.0.8",
     "autoprefixer": "^10.4.14",
     "postcss": "^8.4.24",
     "tailwindcss": "^3.3.2",

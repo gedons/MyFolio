@@ -656,11 +656,12 @@ const raycastClick = () => {
   }
 }
 
-const handleNodeClick = (id) => {
-  if (justClosedGuard) return
-  activeNodeId.value = id
+const animateCameraToWaypoint = (id) => {
   const waypoints = getCameraWaypoints()
   const waypoint = waypoints[id] || waypoints.identity
+
+  gsap.killTweensOf(targetSpherical)
+  gsap.killTweensOf(currentLookAt)
 
   gsap.to(targetSpherical, {
     radius: waypoint.radius,
@@ -677,8 +678,6 @@ const handleNodeClick = (id) => {
     duration: 1.2,
     ease: 'power2.inOut'
   })
-
-  emit('select-section', id)
 }
 
 const handleNodeHover = (id, isHovered) => {
@@ -695,8 +694,15 @@ const handleNodeHover = (id, isHovered) => {
   }
 }
 
+const handleNodeClick = (id) => {
+  activeNodeId.value = id
+  animateCameraToWaypoint(id)
+  emit('select-section', id)
+}
+
 const resetCamera = () => {
-  handleNodeClick('identity')
+  activeNodeId.value = 'identity'
+  animateCameraToWaypoint('identity')
 }
 
 let clock = new THREE.Clock()

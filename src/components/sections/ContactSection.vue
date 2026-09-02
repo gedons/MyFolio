@@ -6,7 +6,7 @@
         Let’s Build Something Exceptional
       </h2>
       <p class="text-text-muted mt-4 text-base sm:text-lg font-body leading-relaxed max-w-xl mx-auto">
-        Have an exciting project, architecture challenge, or collaboration in mind? Reach out directly—my inbox is always open.
+        Have an exciting project, architecture challenge, or collaboration in mind? Reach out directly, my inbox is always open.
       </p>
     </div>
 
@@ -15,12 +15,12 @@
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-8 pb-8 border-b border-surface2/50">
         <div class="space-y-2">
           <span class="text-xs font-semibold uppercase tracking-wider text-text-muted">Direct Email Channel</span>
-          <div class="text-2xl sm:text-4xl font-display font-bold text-white tracking-tight break-all">
+          <div class="text-2xl sm:text-2xl font-display font-bold text-white tracking-tight break-all">
             {{ email }}
           </div>
-          <p class="text-sm text-text-muted font-body">
+          <!-- <p class="text-sm text-text-muted font-body">
             Typical response time: <span class="text-slate-300 font-medium">&lt; 12 hours</span> &bull; Based in Nigeria (WAT)
-          </p>
+          </p> -->
         </div>
 
         <!-- Actions -->
@@ -72,7 +72,7 @@
 
         <!-- LinkedIn Link -->
         <a
-          href="https://linkedin.com/in/gedoniani"
+          href="https://linkedin.com/in/gedonidev"
           target="_blank"
           rel="noopener noreferrer"
           class="flex items-center gap-4 p-4 rounded-2xl hover:bg-surface2/40 border border-transparent hover:border-slate-800/60 transition-all duration-200 group"

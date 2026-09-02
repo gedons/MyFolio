@@ -122,17 +122,17 @@ const isMobileScreen = () => {
 }
 
 const getDefaultRadius = () => {
-  return isMobileScreen() ? 16.0 : 11.0
+  return isMobileScreen() ? 19.0 : 11.0
 }
 
 const getNodePositions = (isMobile) => {
   if (isMobile) {
     return {
-      identity: new THREE.Vector3(0, 0.15, 0),
-      work: new THREE.Vector3(-2.2, 0.45, -0.6),    // Centered inward so it never cuts on narrow mobile screens
-      about: new THREE.Vector3(2.2, 0.35, -0.5),    // Centered inward so it never cuts on narrow mobile screens
-      contact: new THREE.Vector3(0, -3.1, 2.0),
-      stack: new THREE.Vector3(0, 3.3, -2.0)
+      identity: new THREE.Vector3(0, 0, 0),
+      work: new THREE.Vector3(-2.4, 2.5, -1.0),
+      about: new THREE.Vector3(2.4, -2.5, -1.0),
+      contact: new THREE.Vector3(0, -5.5, 1.5),
+      stack: new THREE.Vector3(0, 5.5, -2.0)
     }
   }
   return {
@@ -174,7 +174,7 @@ const getCameraWaypoints = () => {
   const isMobile = isMobileScreen()
   const positions = getNodePositions(isMobile)
   return {
-    identity: { radius: isMobile ? 16.0 : 11.0, theta: 0, phi: Math.PI / 2.2, lookAt: new THREE.Vector3(0, 0, 0) },
+    identity: { radius: isMobile ? 19.0 : 11.0, theta: 0, phi: Math.PI / 2.2, lookAt: new THREE.Vector3(0, 0, 0) },
     work: { radius: isMobile ? 10.0 : 7.5, theta: isMobile ? -Math.PI / 4 : -Math.PI / 3.5, phi: Math.PI / 2.4, lookAt: positions.work },
     about: { radius: isMobile ? 10.0 : 7.5, theta: isMobile ? Math.PI / 4 : Math.PI / 3.5, phi: Math.PI / 2.4, lookAt: positions.about },
     contact: { radius: isMobile ? 9.5 : 7.0, theta: 0, phi: Math.PI / 1.7, lookAt: positions.contact },
